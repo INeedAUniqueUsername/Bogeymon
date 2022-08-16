@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Background.png" type="Texture" id=1]
+[ext_resource path="res://Creature.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Battle.gd" type="Script" id=3]
+[ext_resource path="res://Player.png" type="Texture" id=4]
+[ext_resource path="res://IceBeamProjectile.tscn" type="PackedScene" id=5]
+[ext_resource path="res://HPBox.tscn" type="PackedScene" id=6]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Background" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="PlayerSprite" type="Sprite" parent="."]
+position = Vector2( 360, 392 )
+texture = ExtResource( 4 )
+
+[node name="IceBeamProjectile" parent="." instance=ExtResource( 5 )]
+
+[node name="Stoneborn" parent="." instance=ExtResource( 2 )]
+position = Vector2( 400, 704 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+
+[node name="LeftA" parent="Control" instance=ExtResource( 6 )]
+
+[node name="LeftB" parent="Control" instance=ExtResource( 6 )]
+anchor_left = 0.3
+anchor_right = 0.3
+
+[node name="LeftA2" parent="Control" instance=ExtResource( 6 )]
+anchor_left = 0.7
+anchor_right = 0.7
+
+[node name="LeftB2" parent="Control" instance=ExtResource( 6 )]
+anchor_left = 0.9
+anchor_right = 0.9
