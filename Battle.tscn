@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
 [ext_resource path="res://Stoneborn.tscn" type="PackedScene" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://LongButtonHover.png" type="Texture" id=14]
 [ext_resource path="res://TextBox.png" type="Texture" id=15]
 [ext_resource path="res://Scarabold.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Shadow.png" type="Texture" id=17]
 
 [sub_resource type="Animation" id=3]
 resource_name = "Hide"
@@ -134,6 +135,12 @@ script = ExtResource( 3 )
 [node name="Background" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
+
+[node name="Shadow" type="Sprite" parent="."]
+self_modulate = Color( 1, 1, 1, 0.2 )
+position = Vector2( 392, 488 )
+scale = Vector2( 0.5, 0.2 )
+texture = ExtResource( 17 )
 
 [node name="PlayerSprite" type="Sprite" parent="."]
 position = Vector2( 392, 392 )
@@ -291,9 +298,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -960.0
-margin_right = 960.0
-margin_bottom = 128.0
+margin_top = 1080.0
+margin_right = 1920.0
+margin_bottom = 1208.0
 texture = ExtResource( 15 )
 
 [node name="Text" type="Label" parent="UI/Dialog"]

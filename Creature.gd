@@ -5,16 +5,19 @@ export(String) var nickname
 enum Moves {
 	None,
 	SnapFreeze,
-	BrickThrow
+	BrickThrow,
+	Sunblast
 }
 var NameTable = {
 	Moves.SnapFreeze: "Snap Freeze",
 	Moves.BrickThrow: "Brick Throw",
+	Moves.Sunblast: "Sunblast"
 }
 var PpTable = {
 	Moves.None: 0,
 	Moves.SnapFreeze: 15,
 	Moves.BrickThrow: 15,
+	Moves.Sunblast: 15
 }
 
 export(Array, Moves) var moves = [Moves.None, Moves.None, Moves.None, Moves.None]
@@ -79,6 +82,15 @@ func brick_throw():
 	
 	yield(c, "tree_exited")
 	
+func sunblast():
+	var b = load("res://Sunblast.tscn").instance()
+	b.source = self
+	world.add_child(b)
+	b.global_scale = [Vector2(1, 1), Vector2(-1, 1)][place.side]
+	b.global_position = global_position
+	b.global_position.x = $Sprite/FireBeam.global_position.x
+	b.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
+	yield(b, "tree_exited")
 var jumpReady = true
 func jump():
 	$Jump.play("Jump")

@@ -22,14 +22,13 @@ func _ready():
 	var b = $UI/CreatureMenu/MoveList.get_children()
 	for i in range(len(b)):
 		b[i].connect("pressed", self, "choose_move", [i])
-	creature = creatures[0]
 	
 	for i in range(4):
 		var c = creatures[i]
 		if c:
 			c.connect("hp_changed", self, "creature_hp_changed", [c])
 			var box = boxes[i]
-			box.get_node("Name").text = creature.species
+			box.get_node("Name").text = c.species
 			
 	while true:
 		for c in creatures:
@@ -86,6 +85,13 @@ func choose_move(i):
 			yield(showMessage(msg), "completed")
 			yield(creature.brick_throw(), "completed")
 			hideMessage()
+		Moves.Sunblast:
+			
+			yield(showMessage(msg), "completed")
+			yield(creature.sunblast(), "completed")
+			hideMessage()
+		_:
+			assert(false)
 	emit_signal("creature_done")
 	
 var dialogVisible = false
