@@ -29,6 +29,7 @@ func _ready():
 			c.connect("hp_changed", self, "creature_hp_changed", [c])
 			var box = boxes[i]
 			box.get_node("Name").text = c.species
+			box.get_node("HpRoller").set_amount(c.hp)
 			
 	while true:
 		for c in creatures:
@@ -41,7 +42,7 @@ func _ready():
 			yield(self, "creature_done")
 			
 func creature_hp_changed(c):
-	boxes[creatures.find(c)].get_node("HpBar").set_amount(c.hp, c.hp_max)
+	boxes[creatures.find(c)].get_node("HpRoller").set_amount(c.hp)
 			
 signal creature_done()
 func show_move_list():

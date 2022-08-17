@@ -19,7 +19,8 @@ func set_amount(a):
 			emit_signal("amount_changed")
 			
 			var t = Tween.new()
-			t.interpolate_method(self, "set_amount_direct", am, a, 0.05 * d / step)
+			
+			t.interpolate_method(self, "set_amount_direct", am, floor(a / step) * step, fmod(d / step, 10))
 			add_child(t)
 			t.start()
 			t.connect("tween_all_completed", t, "queue_free")
@@ -30,7 +31,7 @@ func set_amount(a):
 		set_rect_amount(fmod(a / pow(10, magnitude), 10))
 func get_amount(): return amount
 func set_amount_direct(a):
-	amount = a
+	#amount = a
 	set_rect_amount(fmod(a / pow(10, magnitude), 10))
 
 func set_rect_amount(amount):

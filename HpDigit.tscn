@@ -7,6 +7,5 @@
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 0, 304, 24, 32 )
+region_rect = Rect2( 0, 320, 24, 32 )
 script = ExtResource( 2 )
-amount = 0.5
