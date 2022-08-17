@@ -44,21 +44,24 @@ position = Vector2( 48, 0 )
 
 [node name="D4" parent="Node2D" instance=ExtResource( 5 )]
 position = Vector2( 12, 40 )
-region_rect = Rect2( 0, 319.968, 24, 32 )
+region_rect = Rect2( 0, 320, 24, 32 )
 magnitude = 4.0
-amount = 10.0
+amount = 0.0
+truncate = true
 
 [node name="D3" parent="Node2D" instance=ExtResource( 5 )]
 position = Vector2( 36, 40 )
 region_rect = Rect2( 0, 320, 24, 32 )
 magnitude = 3.0
 amount = 0.0
+truncate = true
 
 [node name="D2" parent="Node2D" instance=ExtResource( 5 )]
 position = Vector2( 60, 40 )
 region_rect = Rect2( 0, 320, 24, 32 )
 magnitude = 2.0
 amount = 0.0
+truncate = true
 
 [node name="D1" parent="Node2D" instance=ExtResource( 5 )]
 position = Vector2( 84, 40 )
@@ -71,3 +74,4 @@ truncate = true
 position = Vector2( 108, 40 )
 region_rect = Rect2( 0, 320, 24, 32 )
 amount = 0.0
+truncate = true
