@@ -18,7 +18,7 @@ func _ready():
 	$UI/CreatureMenu/Attack.connect("pressed", self, "show_move_list")
 	var b = $UI/CreatureMenu/MoveList.get_children()
 	for i in range(len(b)):
-		b[i].connect("pressed", self, "use_move", [i])
+		b[i].connect("pressed", self, "choose_move", [i])
 	creature = creatures[0]
 	
 	
@@ -27,8 +27,18 @@ func _ready():
 		var c = creatures[i]
 		if c:
 			boxes[i].get_node("Name").text = creature.species
-	update_menu()
-	
+			
+	while true:
+		for c in creatures:
+			if !c:
+				continue
+			if c.cpu:
+				continue
+			creature = c
+			update_menu()
+			yield(self, "creature_done")
+			
+signal creature_done()
 func show_move_list():
 	var m = $UI/CreatureMenu/MoveList
 	if m.visible:
@@ -44,19 +54,51 @@ func update_menu():
 	var b = $UI/CreatureMenu/MoveList.get_children()
 	for i in range(len(b)):
 		var button = b[i]
-		if i < len(creature.moves):
-			var m = creature.moves[i]
-			if creature.pp[m] > 0:
-				button.text = creature.NameTable[m]
-				button.disabled = false
-				continue
+		var m = creature.moves[i]
+		if m != creature.Moves.None and creature.pp[m] > 0:
+			button.get_node("Label").text = creature.NameTable[m]
+			button.disabled = false
+			continue
 		
-		button.text = ""
+		button.get_node("Label").text = ""
 		button.disabled = true
-
-func use_move(i):
+func choose_move(i):
 	$UI/CreatureMenu.hide()
 	var Moves = creature.Moves
-	match creature.moves[i]:
+	var m = creature.moves[i]
+	
+	var msg = "%s used %s" % [creature.species, creature.NameTable[m]]
+	match m:
 		Moves.SnapFreeze:
-			creature.snap_freeze()
+			
+			yield(showMessage(msg), "completed")
+			yield(creature.snap_freeze(), "completed")
+			hideMessage()
+		Moves.BrickThrow:
+			
+			
+			yield(showMessage(msg), "completed")
+			yield(creature.brick_throw(), "completed")
+			hideMessage()
+	emit_signal("creature_done")
+	
+var dialogVisible = false
+func showMessage(text):
+	var dt = $UI/Dialog/Text
+	if !dialogVisible:
+		dt.text = text
+		$UI/Dialog/Anim.play("Show")
+		yield($UI/Dialog/Anim, "animation_finished")
+	
+	dialogVisible = true
+	
+	var t = Tween.new()
+	t.interpolate_property(dt, "visible_characters", 0, len(text), len(text) / 24.0)
+	add_child(t)
+	t.connect("tween_all_completed", t, "queue_free")
+	t.start()
+	yield(t, "tween_all_completed")
+func hideMessage():
+	$UI/Dialog/Anim.play("Hide")
+	yield($UI/Dialog/Anim, "animation_finished")
+	dialogVisible = false

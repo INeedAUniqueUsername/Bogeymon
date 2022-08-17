@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
 [ext_resource path="res://Stoneborn.tscn" type="PackedScene" id=2]
@@ -8,6 +8,124 @@
 [ext_resource path="res://InfoBoxCyan.tscn" type="PackedScene" id=6]
 [ext_resource path="res://BattleScreen.gd" type="Script" id=7]
 [ext_resource path="res://InfoBoxRed.png" type="Texture" id=8]
+[ext_resource path="res://Button.png" type="Texture" id=9]
+[ext_resource path="res://ButtonPressed.png" type="Texture" id=10]
+[ext_resource path="res://ButtonHover.png" type="Texture" id=11]
+[ext_resource path="res://LongButtonNormal.png" type="Texture" id=12]
+[ext_resource path="res://LongButtonPressed.png" type="Texture" id=13]
+[ext_resource path="res://LongButtonHover.png" type="Texture" id=14]
+[ext_resource path="res://TextBox.png" type="Texture" id=15]
+
+[sub_resource type="Animation" id=3]
+resource_name = "Hide"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 0.5, 0.5 ),
+"update": 0,
+"values": [ Vector2( 0, 952 ), Vector2( 0, 1080 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Text:percent_visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"update": 0,
+"values": [  ]
+}
+
+[sub_resource type="Animation" id=1]
+resource_name = "Message"
+length = 2.4
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 2, 2.4 ),
+"transitions": PoolRealArray( 0.5, 1, 0.5, 0.5 ),
+"update": 0,
+"values": [ Vector2( 0, 1080 ), Vector2( 0, 952 ), Vector2( 0, 952 ), Vector2( 0, 1080 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Text:percent_visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 1080 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Text:percent_visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Show"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 0.5, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 1080 ), Vector2( 0, 952 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Text:percent_visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.0 ]
+}
 
 [node name="Node2D" type="Node2D" groups=["World"]]
 script = ExtResource( 3 )
@@ -23,17 +141,16 @@ texture = ExtResource( 4 )
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 current = true
-zoom = Vector2( 1.125, 1.125 )
 
 [node name="LeftA" type="Node2D" parent="." groups=["Place"]]
 position = Vector2( 328, 616 )
 
-[node name="Stoneborn2" parent="LeftA" groups=["Creature"] instance=ExtResource( 2 )]
+[node name="Stoneborn" parent="LeftA" instance=ExtResource( 2 )]
 
 [node name="LeftB" type="Node2D" parent="." groups=["Place"]]
 position = Vector2( 264, 848 )
 
-[node name="Stoneborn" parent="LeftB" groups=["Creature"] instance=ExtResource( 2 )]
+[node name="Stoneborn" parent="LeftB" instance=ExtResource( 2 )]
 
 [node name="RightA" type="Node2D" parent="." groups=["Place"]]
 position = Vector2( 1592, 616 )
@@ -69,47 +186,127 @@ anchor_right = 0.9
 texture = ExtResource( 8 )
 
 [node name="CreatureMenu" type="Control" parent="UI"]
-visible = false
 theme = ExtResource( 5 )
 
-[node name="Attack" type="Button" parent="UI/CreatureMenu"]
-margin_top = -24.0
-margin_right = 128.0
-margin_bottom = 24.0
+[node name="Attack" type="TextureButton" parent="UI/CreatureMenu"]
+margin_left = -64.0
+margin_top = 32.0
+margin_right = 64.0
+margin_bottom = 80.0
 theme = ExtResource( 5 )
+texture_normal = ExtResource( 9 )
+texture_pressed = ExtResource( 10 )
+texture_hover = ExtResource( 11 )
+
+[node name="Label" type="Label" parent="UI/CreatureMenu/Attack"]
+margin_right = 128.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Attack"
+align = 1
+valign = 1
 
 [node name="MoveList" type="Control" parent="UI/CreatureMenu"]
-visible = false
-margin_left = 128.0
-margin_top = -24.0
-margin_right = 128.0
-margin_bottom = -24.0
+margin_left = 64.0
+margin_top = 32.0
+margin_right = 64.0
+margin_bottom = 32.0
 theme = ExtResource( 5 )
 
-[node name="Move0" type="Button" parent="UI/CreatureMenu/MoveList"]
+[node name="Move0" type="TextureButton" parent="UI/CreatureMenu/MoveList"]
 margin_right = 256.0
 margin_bottom = 48.0
 theme = ExtResource( 5 )
-text = "Move0"
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
 
-[node name="Move1" type="Button" parent="UI/CreatureMenu/MoveList"]
+[node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move0"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Move0"
+align = 1
+valign = 1
+
+[node name="Move1" type="TextureButton" parent="UI/CreatureMenu/MoveList"]
 margin_top = 48.0
 margin_right = 256.0
 margin_bottom = 96.0
 theme = ExtResource( 5 )
-text = "Move1"
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
 
-[node name="Move2" type="Button" parent="UI/CreatureMenu/MoveList"]
+[node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move1"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Move1"
+align = 1
+valign = 1
+
+[node name="Move2" type="TextureButton" parent="UI/CreatureMenu/MoveList"]
 margin_top = 96.0
 margin_right = 256.0
 margin_bottom = 144.0
 theme = ExtResource( 5 )
-text = "Move2"
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
 
-[node name="Move3" type="Button" parent="UI/CreatureMenu/MoveList"]
+[node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move2"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Move2"
+align = 1
+valign = 1
+
+[node name="Move3" type="TextureButton" parent="UI/CreatureMenu/MoveList"]
 margin_top = 144.0
 margin_right = 256.0
 margin_bottom = 192.0
 theme = ExtResource( 5 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
+
+[node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move3"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Move3"
+align = 1
+valign = 1
+
+[node name="Dialog" type="TextureRect" parent="UI"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -960.0
+margin_right = 960.0
+margin_bottom = 128.0
+texture = ExtResource( 15 )
+
+[node name="Text" type="Label" parent="UI/Dialog"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 1904.0
+margin_bottom = 112.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "The battle begins!"
+percent_visible = 0.0
+
+[node name="Anim" type="AnimationPlayer" parent="UI/Dialog"]
+anims/Hide = SubResource( 3 )
+anims/Message = SubResource( 1 )
+anims/RESET = SubResource( 2 )
+anims/Show = SubResource( 4 )
