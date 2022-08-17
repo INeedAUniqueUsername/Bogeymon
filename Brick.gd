@@ -1,6 +1,6 @@
 extends Node2D
 
-
+var damage_hp = 15
 var source
 func _on_Area_area_entered(area):
 	if 'creature' in area:

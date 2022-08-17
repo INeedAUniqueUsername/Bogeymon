@@ -2,6 +2,8 @@ extends Node2D
 
 var source
 
+var damage_hp = 15
+
 signal detonated(explosion)
 func detonate():
 	var e = load("res://IceBeamExplosion.tscn").instance()

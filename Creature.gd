@@ -36,6 +36,14 @@ func _ready():
 	for m in moves:
 		pp[m] = PpTable[m]
 onready var world = get_tree().get_nodes_in_group("World")[0]
+
+
+
+signal hp_changed()
+var hp = 100
+var hp_max = 100
+
+
 func snap_freeze():
 	var cast = load("res://IceBeamCast.tscn").instance()
 	world.add_child(cast)
@@ -79,4 +87,6 @@ func jump():
 	jumpReady = true
 
 func take_damage(proj):
+	hp -= proj.damage_hp
+	emit_signal("hp_changed")
 	$Hurt.play("Hurt")

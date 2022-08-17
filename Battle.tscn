@@ -1,11 +1,11 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
 [ext_resource path="res://Stoneborn.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Battle.gd" type="Script" id=3]
 [ext_resource path="res://Player.png" type="Texture" id=4]
 [ext_resource path="res://Monospace.tres" type="Theme" id=5]
-[ext_resource path="res://InfoBoxCyan.tscn" type="PackedScene" id=6]
+[ext_resource path="res://InfoBox.tscn" type="PackedScene" id=6]
 [ext_resource path="res://BattleScreen.gd" type="Script" id=7]
 [ext_resource path="res://InfoBoxRed.png" type="Texture" id=8]
 [ext_resource path="res://Button.png" type="Texture" id=9]
@@ -15,6 +15,7 @@
 [ext_resource path="res://LongButtonPressed.png" type="Texture" id=13]
 [ext_resource path="res://LongButtonHover.png" type="Texture" id=14]
 [ext_resource path="res://TextBox.png" type="Texture" id=15]
+[ext_resource path="res://Scarabold.tscn" type="PackedScene" id=16]
 
 [sub_resource type="Animation" id=3]
 resource_name = "Hide"
@@ -150,7 +151,7 @@ position = Vector2( 328, 616 )
 [node name="LeftB" type="Node2D" parent="." groups=["Place"]]
 position = Vector2( 264, 848 )
 
-[node name="Stoneborn" parent="LeftB" instance=ExtResource( 2 )]
+[node name="Scarabold" parent="LeftB" instance=ExtResource( 16 )]
 
 [node name="RightA" type="Node2D" parent="." groups=["Place"]]
 position = Vector2( 1592, 616 )
@@ -162,7 +163,7 @@ scale = Vector2( -1, 1 )
 position = Vector2( 1656, 848 )
 scale = Vector2( -1, 1 )
 
-[node name="Stoneborn" parent="RightB" groups=["Creature"] instance=ExtResource( 2 )]
+[node name="Scarabold" parent="RightB" instance=ExtResource( 16 )]
 
 [node name="UI" type="Control" parent="."]
 margin_right = 1920.0

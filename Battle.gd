@@ -1,6 +1,9 @@
 extends Node2D
 var creatures = []
 const Place = preload("res://Common.gd").Place
+
+
+onready var boxes = [$UI/LeftA, $UI/LeftB, $UI/RightA, $UI/RightB]
 func _ready():	
 	var places = {
 		$LeftA: Place.new(0, 0, $LeftA),
@@ -21,12 +24,12 @@ func _ready():
 		b[i].connect("pressed", self, "choose_move", [i])
 	creature = creatures[0]
 	
-	
-	var boxes = [$UI/LeftA, $UI/LeftB, $UI/RightA, $UI/RightB]
 	for i in range(4):
 		var c = creatures[i]
 		if c:
-			boxes[i].get_node("Name").text = creature.species
+			c.connect("hp_changed", self, "creature_hp_changed", [c])
+			var box = boxes[i]
+			box.get_node("Name").text = creature.species
 			
 	while true:
 		for c in creatures:
@@ -37,6 +40,9 @@ func _ready():
 			creature = c
 			update_menu()
 			yield(self, "creature_done")
+			
+func creature_hp_changed(c):
+	boxes[creatures.find(c)].get_node("HpBar").set_amount(c.hp, c.hp_max)
 			
 signal creature_done()
 func show_move_list():
