@@ -20,7 +20,10 @@ func set_amount(a):
 			
 			var t = Tween.new()
 			
-			t.interpolate_method(self, "set_amount_direct", am, floor(a / step) * step, fmod(d / step, 10))
+			
+			#var time = floor(d / step) * pow(10, magnitude) / 30.0
+			var time = d / 10.0
+			t.interpolate_method(self, "set_amount_direct", am, floor(a / step) * step, time)
 			add_child(t)
 			t.start()
 			t.connect("tween_all_completed", t, "queue_free")
