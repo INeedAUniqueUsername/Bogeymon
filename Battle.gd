@@ -37,6 +37,8 @@ func _ready():
 		for c in creatures:
 			if !c:
 				continue
+			if c.hp == 0:
+				continue
 			if c.cpu:
 				continue
 			creature = c

@@ -145,6 +145,7 @@ offset = Vector2( 0, -64 )
 position = Vector2( 128, -44 )
 
 [node name="Eyes" type="Area2D" parent="Sprite" groups=["Eyes"]]
+visible = false
 position = Vector2( 62, -48 )
 priority = 1.0
 script = ExtResource( 3 )
@@ -155,6 +156,7 @@ position = Vector2( -2, 0 )
 shape = SubResource( 10 )
 
 [node name="Sweetspot" type="Area2D" parent="Sprite" groups=["Sweet"]]
+visible = false
 position = Vector2( -12, -112 )
 priority = 1.0
 script = ExtResource( 3 )
@@ -164,6 +166,7 @@ creature = NodePath("../..")
 shape = SubResource( 8 )
 
 [node name="Body" type="Area2D" parent="Sprite"]
+visible = false
 position = Vector2( 0, -32 )
 script = ExtResource( 3 )
 creature = NodePath("../..")
