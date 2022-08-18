@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Creature.gd" type="Script" id=1]
 [ext_resource path="res://Stoneborn.png" type="Texture" id=2]
@@ -8,11 +8,14 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 96, 32 )
 
-[sub_resource type="RectangleShape2D" id=7]
-extents = Vector2( 96, 80 )
+[sub_resource type="RectangleShape2D" id=10]
+extents = Vector2( 24, 24 )
 
 [sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 24, 16 )
+
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 80, 64 )
 
 [sub_resource type="Animation" id=4]
 resource_name = "Idle"
@@ -141,24 +144,32 @@ offset = Vector2( 0, -64 )
 [node name="FireBeam" type="Node2D" parent="Sprite"]
 position = Vector2( 128, -44 )
 
-[node name="Body" type="Area2D" parent="Sprite"]
-visible = false
-position = Vector2( 0, -32 )
+[node name="Eyes" type="Area2D" parent="Sprite" groups=["Eyes"]]
+position = Vector2( 62, -48 )
+priority = 1.0
 script = ExtResource( 3 )
 creature = NodePath("../..")
 
-[node name="Shape" type="CollisionShape2D" parent="Sprite/Body"]
-position = Vector2( 0, -16 )
-shape = SubResource( 7 )
+[node name="Shape" type="CollisionShape2D" parent="Sprite/Eyes"]
+position = Vector2( -2, 0 )
+shape = SubResource( 10 )
 
-[node name="Sweetspot" type="Area2D" parent="Sprite"]
-visible = false
+[node name="Sweetspot" type="Area2D" parent="Sprite" groups=["Sweet"]]
 position = Vector2( -12, -112 )
+priority = 1.0
 script = ExtResource( 3 )
 creature = NodePath("../..")
 
 [node name="Shape" type="CollisionShape2D" parent="Sprite/Sweetspot"]
 shape = SubResource( 8 )
+
+[node name="Body" type="Area2D" parent="Sprite"]
+position = Vector2( 0, -32 )
+script = ExtResource( 3 )
+creature = NodePath("../..")
+
+[node name="Shape" type="CollisionShape2D" parent="Sprite/Body"]
+shape = SubResource( 9 )
 
 [node name="Jump" type="AnimationPlayer" parent="."]
 anims/Idle = SubResource( 4 )

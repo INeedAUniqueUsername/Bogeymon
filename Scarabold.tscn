@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Creature.gd" type="Script" id=1]
 [ext_resource path="res://Scarabold.png" type="Texture" id=2]
@@ -8,8 +8,11 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 96, 32 )
 
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 8, 8 )
+
 [sub_resource type="RectangleShape2D" id=7]
-extents = Vector2( 96, 48 )
+extents = Vector2( 80, 32 )
 
 [sub_resource type="Animation" id=4]
 resource_name = "Idle"
@@ -136,15 +139,23 @@ texture = ExtResource( 2 )
 offset = Vector2( 0, -64 )
 
 [node name="FireBeam" type="Node2D" parent="Sprite"]
-position = Vector2( 64, -64 )
+position = Vector2( 104, -18 )
+
+[node name="Eyes" type="Area2D" parent="Sprite" groups=["Eyes"]]
+position = Vector2( 70, -19 )
+priority = 1.0
+script = ExtResource( 3 )
+creature = NodePath("../..")
+
+[node name="Shape" type="CollisionShape2D" parent="Sprite/Eyes"]
+shape = SubResource( 8 )
 
 [node name="Body" type="Area2D" parent="Sprite"]
-visible = false
 script = ExtResource( 3 )
 creature = NodePath("../..")
 
 [node name="Shape" type="CollisionShape2D" parent="Sprite/Body"]
-position = Vector2( 0, -16 )
+position = Vector2( -8, -22 )
 shape = SubResource( 7 )
 
 [node name="Jump" type="AnimationPlayer" parent="."]

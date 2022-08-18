@@ -5,13 +5,19 @@ export(float) var magnitude = 0
 export(float) var amount = 0 setget set_amount, get_amount
 export(bool) var truncate = false
 
+
+
+func get_step(): return pow(10, magnitude)
+func trunc(a, interval): return floor(a / interval) * interval
+
+
 signal amount_changed()
 func set_amount(a):
 	if truncate:
-		var step = pow(10, magnitude)
-		var d = abs(a - amount)
-		if d >= step:
-			
+		var step = get_step()
+		var digitDelta = abs(trunc(a, step) - trunc(amount, step))
+		if digitDelta != 0:
+			var d = abs(a - amount)
 	
 			var am = amount
 			
@@ -22,8 +28,8 @@ func set_amount(a):
 			
 			
 			#var time = floor(d / step) * pow(10, magnitude) / 30.0
-			var time = d / 10.0
-			t.interpolate_method(self, "set_amount_direct", am, floor(a / step) * step, time)
+			var time = 0.2
+			t.interpolate_method(self, "set_amount_direct", trunc(am, step), trunc(a, step), time)
 			add_child(t)
 			t.start()
 			t.connect("tween_all_completed", t, "queue_free")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
 [ext_resource path="res://Stoneborn.tscn" type="PackedScene" id=2]
@@ -17,6 +17,12 @@
 [ext_resource path="res://TextBox.png" type="Texture" id=15]
 [ext_resource path="res://Scarabold.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Shadow.png" type="Texture" id=17]
+[ext_resource path="res://MoveDescBox.png" type="Texture" id=18]
+[ext_resource path="res://IBMPlexMono-Regular.ttf" type="DynamicFontData" id=19]
+
+[sub_resource type="DynamicFont" id=5]
+size = 20
+font_data = ExtResource( 19 )
 
 [sub_resource type="Animation" id=3]
 resource_name = "Hide"
@@ -133,6 +139,7 @@ tracks/1/keys = {
 script = ExtResource( 3 )
 
 [node name="Background" type="Sprite" parent="."]
+z_index = -5
 texture = ExtResource( 1 )
 centered = false
 
@@ -156,7 +163,7 @@ position = Vector2( 328, 616 )
 [node name="Stoneborn" parent="LeftA" instance=ExtResource( 2 )]
 
 [node name="LeftB" type="Node2D" parent="." groups=["Place"]]
-position = Vector2( 264, 848 )
+position = Vector2( 328, 848 )
 
 [node name="Scarabold" parent="LeftB" instance=ExtResource( 16 )]
 
@@ -167,7 +174,7 @@ scale = Vector2( -1, 1 )
 [node name="Stoneborn2" parent="RightA" groups=["Creature"] instance=ExtResource( 2 )]
 
 [node name="RightB" type="Node2D" parent="." groups=["Place"]]
-position = Vector2( 1656, 848 )
+position = Vector2( 1592, 848 )
 scale = Vector2( -1, 1 )
 
 [node name="Scarabold" parent="RightB" instance=ExtResource( 16 )]
@@ -193,6 +200,26 @@ anchor_left = 0.9
 anchor_right = 0.9
 texture = ExtResource( 8 )
 
+[node name="SelectTarget" type="TextureRect" parent="UI"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -128.0
+margin_top = 176.0
+margin_right = 128.0
+margin_bottom = 224.0
+theme = ExtResource( 5 )
+texture = ExtResource( 12 )
+
+[node name="Label" type="Label" parent="UI/SelectTarget"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Select Target"
+align = 1
+valign = 1
+
 [node name="CreatureMenu" type="Control" parent="UI"]
 theme = ExtResource( 5 )
 
@@ -216,10 +243,10 @@ align = 1
 valign = 1
 
 [node name="MoveList" type="Control" parent="UI/CreatureMenu"]
-margin_left = 64.0
-margin_top = 32.0
-margin_right = 64.0
-margin_bottom = 32.0
+margin_left = -64.0
+margin_top = 80.0
+margin_right = -64.0
+margin_bottom = 80.0
 theme = ExtResource( 5 )
 
 [node name="Move0" type="TextureButton" parent="UI/CreatureMenu/MoveList"]
@@ -293,14 +320,32 @@ text = "Move3"
 align = 1
 valign = 1
 
+[node name="Description" type="TextureRect" parent="UI/CreatureMenu/MoveList"]
+margin_left = 256.0
+margin_right = 512.0
+margin_bottom = 192.0
+theme = ExtResource( 5 )
+texture = ExtResource( 18 )
+
+[node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Description"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 368.0
+margin_bottom = 168.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "Description"
+autowrap = true
+
 [node name="Dialog" type="TextureRect" parent="UI"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_top = 1080.0
-margin_right = 1920.0
-margin_bottom = 1208.0
+margin_left = -960.0
+margin_right = 960.0
+margin_bottom = 128.0
 texture = ExtResource( 15 )
 
 [node name="Text" type="Label" parent="UI/Dialog"]

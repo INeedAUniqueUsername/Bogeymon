@@ -1,61 +1,83 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://InfoBoxCyan.png" type="Texture" id=1]
 [ext_resource path="res://Monospace.tres" type="Theme" id=2]
+[ext_resource path="res://InfoBox.gd" type="Script" id=3]
 [ext_resource path="res://HpDigit.tscn" type="PackedScene" id=5]
 [ext_resource path="res://HpRoller.gd" type="Script" id=6]
 
 [node name="LeftA" type="TextureRect"]
 anchor_left = 0.1
 anchor_right = 0.1
-margin_left = -96.0
+margin_left = -128.0
 margin_top = 32.0
-margin_right = 96.0
-margin_bottom = 96.0
+margin_right = 128.0
+margin_bottom = 128.0
 texture = ExtResource( 1 )
+script = ExtResource( 3 )
 
 [node name="Name" type="Label" parent="."]
-margin_right = 192.0
-margin_bottom = 64.0
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 240.0
+margin_bottom = 72.0
 theme = ExtResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Creature 1"
-align = 1
+
+[node name="HP" type="Label" parent="."]
+margin_left = 16.0
+margin_top = 48.0
+margin_right = 50.0
+margin_bottom = 85.0
+theme = ExtResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "HP"
 
 [node name="HpRoller" type="Node2D" parent="."]
-position = Vector2( 48, 0 )
+position = Vector2( 32, 67 )
 script = ExtResource( 6 )
 
 [node name="D4" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 12, 40 )
-region_rect = Rect2( 0, 320, 24, 32 )
+position = Vector2( 48, 0 )
+centered = true
 magnitude = 4.0
-amount = 0.0
+amount = 0
 truncate = true
 
 [node name="D3" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 36, 40 )
-region_rect = Rect2( 0, 320, 24, 32 )
+position = Vector2( 72, 0 )
+centered = true
 magnitude = 3.0
-amount = 0.0
+amount = 0
 truncate = true
 
 [node name="D2" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 60, 40 )
-region_rect = Rect2( 0, 320, 24, 32 )
+position = Vector2( 96, 0 )
+centered = true
 magnitude = 2.0
-amount = 0.0
+amount = 0
 truncate = true
 
 [node name="D1" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 84, 40 )
-region_rect = Rect2( 0, 320, 24, 32 )
+position = Vector2( 120, 0 )
+centered = true
 magnitude = 1.0
-amount = 0.0
+amount = 0
 truncate = true
 
 [node name="D0" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 108, 40 )
-region_rect = Rect2( 0, 320, 24, 32 )
-amount = 0.0
+position = Vector2( 144, 0 )
+centered = true
+magnitude = 0
+amount = 0
 truncate = true
+
+[node name="Status" type="Label" parent="."]
+margin_left = 16.0
+margin_top = 88.0
+margin_right = 118.0
+margin_bottom = 125.0
+theme = ExtResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Active"
