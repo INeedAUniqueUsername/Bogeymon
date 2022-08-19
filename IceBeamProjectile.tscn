@@ -43,7 +43,6 @@ script = ExtResource( 2 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Sprite")
-autoplay = "Flash"
 anims/Flash = SubResource( 1 )
 anims/RESET = SubResource( 2 )
 
@@ -60,4 +59,5 @@ shape = SubResource( 3 )
 [node name="Shadow" type="Sprite" parent="."]
 self_modulate = Color( 1, 1, 1, 0.2 )
 scale = Vector2( 0.25, 0.1 )
+z_index = -1
 texture = ExtResource( 3 )

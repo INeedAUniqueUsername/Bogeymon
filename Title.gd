@@ -6,6 +6,7 @@ func _ready():
 	$Buttons/Play.connect("pressed", self, "play")
 var version
 func transition(version):
+	Game.innovation = ["Bold", "Brash"].find(version)
 	self.version = version
 	get_node(version).show()
 	$Anim.play("Selected")

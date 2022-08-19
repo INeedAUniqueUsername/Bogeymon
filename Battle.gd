@@ -26,10 +26,12 @@ func _ready():
 	
 	
 	for c in creatures:
+		c.summon()
 		
 		var box = StatBox.instance()
-		box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][c.place.side]
+		box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][Game.innovate(c.place.side)]
 		[$UI/Left, $UI/Right][c.place.side].add_child(box)
+		box.rect_scale = Vector2(0.75, 0.75)
 		
 		box.nameLabel.text = c.species
 		box.hpRoller.set_amount(c.hp, 50.0)
@@ -46,7 +48,7 @@ func _ready():
 		for c in creatures:
 			if !c:
 				continue
-			if c.hp == 0:
+			if c.fainted:
 				continue
 			if c.cpu:
 				continue
@@ -78,6 +80,7 @@ func on_roller_stopped(c, box):
 	c.hurt_rate = 10
 	if !box.hpRoller.amount == 0:
 		return
+	c.faint()
 	box.statusLabel.text = "Knocked out!"
 func creature_damaged(proj, c, box):
 	box.shake()
@@ -155,13 +158,13 @@ func show_move_desc(i):
 	var desc = $UI/CreatureMenu/MoveList/Description
 	desc.get_node("Label").text = creature.DescTable[m]
 	desc.show()
+	
 func choose_move(i):
 	$UI/CreatureMenu.hide()
 	if yield(handle_move(i), "completed"):
 		creature.allowStrike = true
 		emit_signal("creature_done")
 		return
-	
 	$UI/CreatureMenu.show()
 func handle_move(i):
 	var Moves = creature.Moves
@@ -187,6 +190,9 @@ func handle_move(i):
 		Moves.Sunblast:
 			yield(showMessage(msg), "completed")
 			yield(creature.sunblast(), "completed")
+		Moves.DungBowl:
+			yield(showMessage(msg), "completed")
+			yield(creature.dung_bowl(), "completed")
 		_:
 			assert(false)
 	hideMessage()

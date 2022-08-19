@@ -1,7 +1,7 @@
 extends Node2D
 
 var sweet = false
-var damage_hp = 15
+var damage_hp = 20
 var source
 var hit = false
 func _on_Area_area_entered(area):

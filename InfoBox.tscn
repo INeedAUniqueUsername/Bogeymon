@@ -11,8 +11,8 @@ anchor_left = 0.1
 anchor_right = 0.1
 margin_left = -128.0
 margin_top = 32.0
-margin_right = 128.0
-margin_bottom = 128.0
+margin_right = 80.0
+margin_bottom = 224.0
 texture = ExtResource( 1 )
 script = ExtResource( 3 )
 

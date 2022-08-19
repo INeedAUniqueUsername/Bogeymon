@@ -3,7 +3,7 @@ extends Node2D
 onready var groundArea = $Area
 var source
 
-var damage_hp = 15
+var damage_hp = 20
 
 var hit = false
 

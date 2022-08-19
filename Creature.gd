@@ -6,23 +6,33 @@ enum Moves {
 	None,
 	SnapFreeze,
 	BrickThrow,
-	Sunblast
+	Sunblast,
+	DungBowl,
+	Lunge,
+	Feather
 }
 var NameTable = {
 	Moves.SnapFreeze: "Snap Freeze",
 	Moves.BrickThrow: "Brick Throw",
-	Moves.Sunblast: "Sunblast"
+	Moves.Sunblast: "Sunblast",
+	Moves.DungBowl: "Dung Bowl",
+	Moves.Lunge: "Lunge",
+	Moves.Feather: "Feather"
 }
 var DescTable = {
 	Moves.SnapFreeze: "Casts a freezing orb at the target. Press Enter to detonate the orb when it reaches the target",
 	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots for double damage. You have 2.5 seconds to aim before throwing.",
-	Moves.Sunblast: "Fires a burning ray of sunlight straight ahead. Can hit eyespots for double damage."
+	Moves.Sunblast: "Fires a burning ray of sunlight straight ahead. Can hit eyespots for double damage.",
+	Moves.DungBowl: "Rolls a large ball of dung. Press Enter to accelerate the ball and use Up/Down to aim."
 }
 var PpTable = {
 	Moves.None: 0,
 	Moves.SnapFreeze: 15,
 	Moves.BrickThrow: 15,
-	Moves.Sunblast: 15
+	Moves.Sunblast: 15,
+	Moves.DungBowl: 10,
+	Moves.Lunge: 10,
+	Moves.Feather: 10
 }
 
 export(Array, Moves) var moves = [Moves.None, Moves.None, Moves.None, Moves.None]
@@ -46,10 +56,24 @@ func _ready():
 	for m in moves:
 		pp[m] = PpTable[m]
 onready var world = get_tree().get_nodes_in_group("World")[0]
+
+func summon():
+	if $Pose and $Pose.has_animation("Summon"):
+		$Pose.play("Summon")
+		yield($Pose, "animation_finished")
+		$Pose.play("Idle")
+		var s = load("res://SummonSparkles.tscn").instance()
+		world.add_child(s)
+		s.global_position = $Center.global_position
+
+func get_forward():
+	return Vector2([1, -1][place.side], 0)
+func get_scale():
+	return Vector2([1, -1][place.side], 1)
 signal hp_changed()
 signal damaged(proj)
-var hp = 100
-var hp_max = 100
+export(int) var hp_max = 40
+onready var hp = hp_max
 var hurt_rate = 5.0
 func snap_freeze(target):
 	var cast = load("res://IceBeamCast.tscn").instance()
@@ -116,11 +140,33 @@ func sunblast():
 	var b = load("res://Sunblast.tscn").instance()
 	b.source = self
 	world.add_child(b)
-	b.global_scale = [Vector2(1, 1), Vector2(-1, 1)][place.side]
+	b.global_scale = get_scale()
 	b.global_position = global_position
 	b.global_position.x = $Sprite/FireBeam.global_position.x
 	b.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
 	yield(b, "tree_exited")
+	
+func dung_bowl():
+	var disp = get_forward() * 1024
+	
+	var t = Game.inc_tw(world, self, "global_position", -disp, 1)
+	yield(t, "tween_all_completed")
+	
+	
+	var ball = load("res://Dungball.tscn").instance()
+	world.add_child(ball)
+	ball.global_position = $DungBallPos.global_position
+	ball.source = self
+	ball.direction = get_forward()
+	Game.inc_tw(world, ball, "global_position", disp, 1)
+	
+	t = Game.inc_tw(world, self, "global_position", disp, 1)
+	yield(t, "tween_all_completed")
+	
+	ball.charge()
+	get_tree().create_timer(2.5).connect("timeout", ball, "roll")
+	yield(get_tree().create_timer(5), "timeout")
+	
 func miss():
 	var m = load("res://RatingMiss.tscn").instance()
 	world.add_child(m)
@@ -131,6 +177,13 @@ func jump():
 	jumpReady = false
 	yield(get_tree().create_timer(1.0), "timeout")
 	jumpReady = true
+	
+var fainted = false
+func faint():
+	fainted = true
+	if $Pose:
+		$Pose.play("Faint")
+	
 func take_damage(proj):
 	if 'sweet' in proj and proj.sweet:
 		var s = load("res://RatingSweet.tscn").instance()
@@ -140,9 +193,13 @@ func take_damage(proj):
 		var s = load("res://RatingCool.tscn").instance()
 		get_tree().get_nodes_in_group("World")[0].add_child(s)
 		s.global_position = global_position
-	var hp_prev = hp
+		
 	
 	emit_signal("damaged", proj)
+	
+	if fainted:
+		return
+	var hp_prev = hp
 	
 	var mult = 2 if 'sweet' in proj and proj.sweet else 1
 	if proj.is_in_group("Falloff"):
@@ -150,8 +207,15 @@ func take_damage(proj):
 		var div = max(1, log(dist) / 3)
 		mult /= div
 	hp -= proj.damage_hp * mult
+	hp = max(hp, 0)
+	
 	
 	hurt_rate += 5
 	
 	emit_signal("hp_changed")
 	$Hurt.play("Hurt")
+	if $Pose:
+		$Pose.play("Hurt")
+		yield($Pose, "animation_finished")
+		if !fainted:
+			$Pose.play("Idle")
