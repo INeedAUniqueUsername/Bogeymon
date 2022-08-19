@@ -31,16 +31,22 @@ func _ready():
 var busy = false
 func _process(delta):
 	if Input.is_key_pressed(KEY_ENTER):
-		target = creatures[index]
-		queue_free()
+		select()
 	elif Input.is_key_pressed(KEY_DOWN) and !busy:
-		set_index(index + 1)
-		cooldown()
+		next()
 	elif Input.is_key_pressed(KEY_UP) and !busy:
-		set_index(index - 1)
-		cooldown()
+		prev()
 	elif Input.is_key_pressed(KEY_ESCAPE) and allowCancel:
 		queue_free()
+func next():
+	set_index(index + 1)
+	cooldown()
+func prev():
+	set_index(index - 1)
+	cooldown()
+func select():
+	target = creatures[index]
+	queue_free()
 func cooldown():
 	busy = true
 	yield(get_tree().create_timer(0.5), "timeout")

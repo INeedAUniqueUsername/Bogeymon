@@ -40,6 +40,8 @@ func set_place(p):
 func get_place(): return place
 var cpu = false
 var allowJump = true
+
+var allowStrike = false
 func _ready():
 	for m in moves:
 		pp[m] = PpTable[m]
@@ -48,6 +50,7 @@ signal hp_changed()
 signal damaged(proj)
 var hp = 100
 var hp_max = 100
+var hurt_rate = 5.0
 func snap_freeze(target):
 	var cast = load("res://IceBeamCast.tscn").instance()
 	world.add_child(cast)
@@ -78,7 +81,8 @@ func snap_freeze(target):
 func brick_throw(target):
 	var c = load("res://BrickThrowCrosshair.tscn").instance()
 	world.add_child(c)
-	var init = target.global_position + polar2cartesian(128, randf() * 2 * PI)
+	var dist = (target.global_position - global_position).length()
+	var init = target.global_position + polar2cartesian(dist/32, randf() * 2 * PI)
 	c.global_position = init
 	
 	var a = load("res://BrickThrowAim.tscn").instance()
@@ -107,7 +111,6 @@ func brick_throw(target):
 	
 	if !c.hit:
 		miss()
-	
 	yield(get_tree().create_timer(1), "timeout")
 func sunblast():
 	var b = load("res://Sunblast.tscn").instance()
@@ -118,21 +121,17 @@ func sunblast():
 	b.global_position.x = $Sprite/FireBeam.global_position.x
 	b.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
 	yield(b, "tree_exited")
-	
 func miss():
 	var m = load("res://RatingMiss.tscn").instance()
 	world.add_child(m)
 	m.global_position = global_position
-	
 var jumpReady = true
 func jump():
 	$Jump.play("Jump")
 	jumpReady = false
 	yield(get_tree().create_timer(1.0), "timeout")
 	jumpReady = true
-
 func take_damage(proj):
-	
 	if 'sweet' in proj and proj.sweet:
 		var s = load("res://RatingSweet.tscn").instance()
 		get_tree().get_nodes_in_group("World")[0].add_child(s)
@@ -141,12 +140,18 @@ func take_damage(proj):
 		var s = load("res://RatingCool.tscn").instance()
 		get_tree().get_nodes_in_group("World")[0].add_child(s)
 		s.global_position = global_position
-		
-	
 	var hp_prev = hp
+	
 	emit_signal("damaged", proj)
 	
 	var mult = 2 if 'sweet' in proj and proj.sweet else 1
+	if proj.is_in_group("Falloff"):
+		var dist = (proj.groundArea.global_position - global_position).length()
+		var div = max(1, log(dist) / 3)
+		mult /= div
 	hp -= proj.damage_hp * mult
+	
+	hurt_rate += 5
+	
 	emit_signal("hp_changed")
 	$Hurt.play("Hurt")

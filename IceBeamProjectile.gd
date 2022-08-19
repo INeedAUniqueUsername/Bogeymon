@@ -1,10 +1,13 @@
 extends Node2D
 
+onready var groundArea = $Area
 var source
 
 var damage_hp = 15
 
 var hit = false
+
+var hitCreatures = []
 signal detonated(explosion)
 func detonate():
 	var e = load("res://IceBeamExplosion.tscn").instance()
@@ -12,9 +15,14 @@ func detonate():
 	e.global_position = $Sprite.global_position
 	
 	for a in $Area.get_overlapping_areas():
-		if 'creature' in a:
-			a.creature.take_damage(self)
-			hit = true
+		if !('creature' in a):
+			continue
+		var c = a.creature
+		if hitCreatures.has(c):
+			continue
+		hitCreatures.append(c)
+		c.take_damage(self)
+		hit = true
 	emit_signal("detonated", e)
 	queue_free()
 func _process(delta):

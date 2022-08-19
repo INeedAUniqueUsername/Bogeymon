@@ -4,36 +4,45 @@ const Place = preload("res://Common.gd").Place
 
 onready var boxes = [$UI/LeftA, $UI/LeftB, $UI/RightA, $UI/RightB]
 func _ready():
-	var places = {
-		$LeftA: Place.new(0, 0, $LeftA),
-		$LeftB: Place.new(0, 1, $LeftB),
-		$RightA: Place.new(1, 0, $RightA),
-		$RightB: Place.new(1, 1, $RightB)
-	}
 	for holder in get_tree().get_nodes_in_group("Place"):
 		if holder.get_child_count() == 0:
-			creatures.append(null)
 			continue
 		var c = holder.get_child(0)
 		creatures.append(c)
-		c.place = places[holder]
+		var side = { $Left:0, $Right:1 }[holder.get_parent()]
+		var index = ["A", "B", "C", "D", "E", "F"].find(holder.name)
+		c.place = Place.new(side, index, holder)
+		
+	
+	$UI/CreatureMenu/TopBar.connect("button_down", self, "drag_menu")
 	$UI/CreatureMenu/Attack.connect("pressed", self, "show_move_list")
-	var buttons = $UI/CreatureMenu/MoveList.get_children()
+	$UI/CreatureMenu/Pass.connect("pressed", self, "creature_pass")
+	var moveButtons = $UI/CreatureMenu/MoveList.get_children()
 	for i in range(4):
-		var b = buttons[i]
+		var b = moveButtons[i]
 		b.connect("pressed", self, "choose_move", [i])
 		b.connect("mouse_entered", self, "show_move_desc", [i])
 		b.connect("mouse_exited", $UI/CreatureMenu/MoveList/Description, "hide")
-	for i in range(4):
-		var c = creatures[i]
-		if c:
-			c.connect("hp_changed", self, "creature_hp_changed", [c])
-			c.connect("damaged", self, "creature_damaged", [c])
-			var box = boxes[i]
-			box.nameLabel.text = c.species
-			box.hpRoller.set_amount(c.hp)
-		boxes[i].hpRoller.connect("roller_stopped", self, "on_roller_stopped", [i])
+	
+	
+	for c in creatures:
+		
+		var box = StatBox.instance()
+		box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][c.place.side]
+		[$UI/Left, $UI/Right][c.place.side].add_child(box)
+		
+		box.nameLabel.text = c.species
+		box.hpRoller.set_amount(c.hp, 50.0)
+		
+		
+		c.connect("hp_changed", self, "creature_hp_changed", [c, box])
+		c.connect("damaged", self, "creature_damaged", [c, box])
+		box.hpRoller.connect("roller_stopped", self, "on_roller_stopped", [c, box])
+		
+		
 	while true:
+		for c in creatures:
+			c.allowStrike = true
 		for c in creatures:
 			if !c:
 				continue
@@ -41,21 +50,46 @@ func _ready():
 				continue
 			if c.cpu:
 				continue
+
 			creature = c
+			
 			update_menu()
+			
+			var arrow = load("res://SubjectArrow.tscn").instance()
+			arrow.global_position = creature.global_position
+			add_child(arrow)
 			yield(self, "creature_done")
-func on_roller_stopped(i):
-	var box = boxes[i]
+			arrow.queue_free()
+			
+func drag_menu():
+	var bar = $UI/CreatureMenu/TopBar
+	var menu = $UI/CreatureMenu
+	var lastPos = get_global_mouse_position()
+	while bar.pressed:
+		var pos = get_global_mouse_position()
+		menu.set_global_position(menu.get_global_position() + pos - lastPos)
+		lastPos = pos
+		yield(get_tree(), "idle_frame")
+			
+const StatBox = preload("res://InfoBox.tscn")
+func creature_hp_changed(c, box):
+	box.hpRoller.set_amount(c.hp, c.hurt_rate)
+func on_roller_stopped(c, box):
+	c.hurt_rate = 10
 	if !box.hpRoller.amount == 0:
 		return
 	box.statusLabel.text = "Knocked out!"
-func creature_hp_changed(c):
-	boxes[creatures.find(c)].hpRoller.set_amount(c.hp)
-func creature_damaged(proj, c):
+func creature_damaged(proj, c, box):
+	box.shake()
+	if !proj.is_in_group("Impact"):
+		return
 	for i in [16, -16, 16, -16, 8, -8, 8, -8, 4, -4, 4, -4, 2, -2, 2, -2, 1, -1, 1, -1, 0]:
 		$Camera2D.position = Vector2(0, i * 2)
 		yield(get_tree().create_timer(0.04), "timeout")
 signal creature_done()
+func creature_pass():
+	creature.allowStrike = true
+	emit_signal("creature_done")
 func show_move_list():
 	var m = $UI/CreatureMenu/MoveList
 	if m.visible:
@@ -94,6 +128,11 @@ func request_target(targets, allowCancel = true):
 		add_child(ch)
 		arrow.connect("tree_exiting", ch.get_node("Anim"), "play", ["Disappear"])
 	$UI/SelectTarget.show()
+	
+	$UI/SelectTarget.connect("pressed", arrow, "select")
+	$UI/SelectTarget/Prev.connect("pressed", arrow, "prev")
+	$UI/SelectTarget/Next.connect("pressed", arrow, "next")
+	
 	yield(arrow, "tree_exiting")
 	$UI/SelectTarget.hide()
 	return arrow.target
@@ -109,7 +148,6 @@ func get_opposing_creatures():
 		result.append(c)
 	return result
 func show_move_desc(i):
-	
 	var Moves = creature.Moves
 	var m = creature.moves[i]
 	if m == 0:
@@ -118,17 +156,16 @@ func show_move_desc(i):
 	desc.get_node("Label").text = creature.DescTable[m]
 	desc.show()
 func choose_move(i):
-	
 	$UI/CreatureMenu.hide()
 	if yield(handle_move(i), "completed"):
+		creature.allowStrike = true
+		emit_signal("creature_done")
 		return
 	
 	$UI/CreatureMenu.show()
 func handle_move(i):
-	
 	var Moves = creature.Moves
 	var m = creature.moves[i]
-	
 	
 	var msg = "%s used %s!" % [creature.species, creature.NameTable[m].to_upper()]
 	
@@ -153,7 +190,6 @@ func handle_move(i):
 		_:
 			assert(false)
 	hideMessage()
-	emit_signal("creature_done")
 	
 	return true
 	

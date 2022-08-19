@@ -10,14 +10,21 @@ func stop_current_tween():
 	if is_instance_valid(currentTween):
 		currentTween.queue_free()
 		currentTween = null
-func set_amount(a):
+		
+var spin_rate = 10.0
+func set_spin_rate(r):
+	spin_rate = float(r)
+func set_amount(a, spin_rate = null):
 	stop_current_tween()
 	
 	a = max(a, 0)
 	
+	if !spin_rate:
+		spin_rate = self.spin_rate
+	
 	var t = Tween.new()
 	add_child(t)
-	t.interpolate_method(self, "set_amount_inter", apparent_amount, a, abs(a - apparent_amount) / 10.0)
+	t.interpolate_method(self, "set_amount_inter", apparent_amount, a, abs(a - apparent_amount) / spin_rate)
 	t.start()
 	t.connect("tween_all_completed", t, "queue_free")
 	t.connect("tween_all_completed", self, "emit_signal", ["roller_stopped"])

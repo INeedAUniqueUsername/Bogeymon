@@ -6,7 +6,7 @@
 [ext_resource path="res://HpDigit.tscn" type="PackedScene" id=5]
 [ext_resource path="res://HpRoller.gd" type="Script" id=6]
 
-[node name="LeftA" type="TextureRect"]
+[node name="StatBox" type="TextureRect"]
 anchor_left = 0.1
 anchor_right = 0.1
 margin_left = -128.0

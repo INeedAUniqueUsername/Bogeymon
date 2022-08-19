@@ -103,7 +103,7 @@ extents = Vector2( 32, 8 )
 [sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 32, 16 )
 
-[node name="BrickThrow" type="Node2D"]
+[node name="BrickThrow" type="Node2D" groups=["Impact"]]
 script = ExtResource( 2 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]

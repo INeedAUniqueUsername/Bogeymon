@@ -1,13 +1,13 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
 [ext_resource path="res://Stoneborn.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Battle.gd" type="Script" id=3]
 [ext_resource path="res://Player.png" type="Texture" id=4]
 [ext_resource path="res://Monospace.tres" type="Theme" id=5]
-[ext_resource path="res://InfoBox.tscn" type="PackedScene" id=6]
-[ext_resource path="res://BattleScreen.gd" type="Script" id=7]
-[ext_resource path="res://InfoBoxRed.png" type="Texture" id=8]
+[ext_resource path="res://SmallButtonPressed.png" type="Texture" id=6]
+[ext_resource path="res://SmallButtonHover.png" type="Texture" id=7]
+[ext_resource path="res://SmallButtonNormal.png" type="Texture" id=8]
 [ext_resource path="res://Button.png" type="Texture" id=9]
 [ext_resource path="res://ButtonPressed.png" type="Texture" id=10]
 [ext_resource path="res://ButtonHover.png" type="Texture" id=11]
@@ -15,10 +15,19 @@
 [ext_resource path="res://LongButtonPressed.png" type="Texture" id=13]
 [ext_resource path="res://LongButtonHover.png" type="Texture" id=14]
 [ext_resource path="res://TextBox.png" type="Texture" id=15]
-[ext_resource path="res://Scarabold.tscn" type="PackedScene" id=16]
+[ext_resource path="res://TopBar.png" type="Texture" id=16]
 [ext_resource path="res://Shadow.png" type="Texture" id=17]
 [ext_resource path="res://MoveDescBox.png" type="Texture" id=18]
 [ext_resource path="res://IBMPlexMono-Regular.ttf" type="DynamicFontData" id=19]
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 960, 16 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 16, 540 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 320, 120 )
 
 [sub_resource type="DynamicFont" id=5]
 size = 20
@@ -135,7 +144,7 @@ tracks/1/keys = {
 "values": [ 0.0, 0.0 ]
 }
 
-[node name="Node2D" type="Node2D" groups=["World"]]
+[node name="World" type="Node2D" groups=["World"]]
 script = ExtResource( 3 )
 
 [node name="Background" type="Sprite" parent="."]
@@ -157,59 +166,149 @@ texture = ExtResource( 4 )
 anchor_mode = 0
 current = true
 
-[node name="LeftA" type="Node2D" parent="." groups=["Place"]]
-position = Vector2( 328, 616 )
+[node name="Area2D" type="Area2D" parent="Camera2D"]
 
-[node name="Stoneborn" parent="LeftA" instance=ExtResource( 2 )]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/Area2D"]
+position = Vector2( 960, 0 )
+shape = SubResource( 6 )
 
-[node name="LeftB" type="Node2D" parent="." groups=["Place"]]
-position = Vector2( 328, 848 )
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Camera2D/Area2D"]
+position = Vector2( 960, 1080 )
+shape = SubResource( 6 )
 
-[node name="Scarabold" parent="LeftB" instance=ExtResource( 16 )]
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Camera2D/Area2D"]
+position = Vector2( 1920, 540 )
+shape = SubResource( 7 )
 
-[node name="RightA" type="Node2D" parent="." groups=["Place"]]
-position = Vector2( 1592, 616 )
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Camera2D/Area2D"]
+position = Vector2( 0, 540 )
+shape = SubResource( 7 )
+
+[node name="Left" type="Node2D" parent="."]
+position = Vector2( 960, 760 )
+
+[node name="A" type="Position2D" parent="Left" groups=["Place"]]
+position = Vector2( -280, 0 )
+
+[node name="Stoneborn" parent="Left/A" instance=ExtResource( 2 )]
+
+[node name="B" type="Position2D" parent="Left" groups=["Place"]]
+position = Vector2( -460, -64 )
+
+[node name="Stoneborn" parent="Left/B" instance=ExtResource( 2 )]
+
+[node name="C" type="Position2D" parent="Left" groups=["Place"]]
+position = Vector2( -460, 64 )
+
+[node name="Stoneborn" parent="Left/C" instance=ExtResource( 2 )]
+
+[node name="D" type="Position2D" parent="Left" groups=["Place"]]
+position = Vector2( -640, -128 )
+
+[node name="E" type="Position2D" parent="Left" groups=["Place"]]
+position = Vector2( -640, 0 )
+
+[node name="F" type="Position2D" parent="Left" groups=["Place"]]
+position = Vector2( -640, 128 )
+
+[node name="Right" type="Node2D" parent="."]
+position = Vector2( 960, 760 )
 scale = Vector2( -1, 1 )
 
-[node name="Stoneborn2" parent="RightA" groups=["Creature"] instance=ExtResource( 2 )]
+[node name="A" type="Position2D" parent="Right" groups=["Place"]]
+position = Vector2( -280, 0 )
 
-[node name="RightB" type="Node2D" parent="." groups=["Place"]]
-position = Vector2( 1592, 848 )
-scale = Vector2( -1, 1 )
+[node name="Stoneborn" parent="Right/A" instance=ExtResource( 2 )]
 
-[node name="Scarabold" parent="RightB" instance=ExtResource( 16 )]
+[node name="B" type="Position2D" parent="Right" groups=["Place"]]
+position = Vector2( -460, -64 )
+
+[node name="Stoneborn" parent="Right/B" instance=ExtResource( 2 )]
+
+[node name="C" type="Position2D" parent="Right" groups=["Place"]]
+position = Vector2( -460, 64 )
+
+[node name="Stoneborn" parent="Right/C" instance=ExtResource( 2 )]
+
+[node name="D" type="Position2D" parent="Right" groups=["Place"]]
+position = Vector2( -640, -128 )
+
+[node name="E" type="Position2D" parent="Right" groups=["Place"]]
+position = Vector2( -640, 0 )
+
+[node name="F" type="Position2D" parent="Right" groups=["Place"]]
+position = Vector2( -640, 128 )
 
 [node name="UI" type="Control" parent="."]
 margin_right = 1920.0
 margin_bottom = 1080.0
-script = ExtResource( 7 )
 
-[node name="LeftA" parent="UI" instance=ExtResource( 6 )]
+[node name="Left" type="HBoxContainer" parent="UI"]
+margin_left = 32.0
+margin_top = 32.0
+margin_right = 800.0
+margin_bottom = 224.0
+alignment = 1
 
-[node name="LeftB" parent="UI" instance=ExtResource( 6 )]
-anchor_left = 0.3
-anchor_right = 0.3
+[node name="Right" type="HBoxContainer" parent="UI"]
+margin_left = 1120.0
+margin_top = 32.0
+margin_right = 1888.0
+margin_bottom = 224.0
+alignment = 1
 
-[node name="RightA" parent="UI" instance=ExtResource( 6 )]
-anchor_left = 0.7
-anchor_right = 0.7
-texture = ExtResource( 8 )
-
-[node name="RightB" parent="UI" instance=ExtResource( 6 )]
-anchor_left = 0.9
-anchor_right = 0.9
-texture = ExtResource( 8 )
-
-[node name="SelectTarget" type="TextureRect" parent="UI"]
+[node name="SelectTarget" type="TextureButton" parent="UI"]
 visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -128.0
-margin_top = 176.0
+margin_top = 384.0
 margin_right = 128.0
-margin_bottom = 224.0
+margin_bottom = 432.0
 theme = ExtResource( 5 )
-texture = ExtResource( 12 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
+
+[node name="Prev" type="TextureButton" parent="UI/SelectTarget"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -192.0
+margin_right = -128.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+
+[node name="Label" type="Label" parent="UI/SelectTarget/Prev"]
+margin_right = 64.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "<-"
+align = 1
+valign = 1
+
+[node name="Next" type="TextureButton" parent="UI/SelectTarget"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 128.0
+margin_right = 192.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+
+[node name="Label" type="Label" parent="UI/SelectTarget/Next"]
+margin_right = 64.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "->"
+align = 1
+valign = 1
 
 [node name="Label" type="Label" parent="UI/SelectTarget"]
 margin_right = 256.0
@@ -222,6 +321,20 @@ valign = 1
 
 [node name="CreatureMenu" type="Control" parent="UI"]
 theme = ExtResource( 5 )
+
+[node name="Vis" type="Area2D" parent="UI/CreatureMenu"]
+position = Vector2( -64, 32 )
+
+[node name="Shape" type="CollisionShape2D" parent="UI/CreatureMenu/Vis"]
+position = Vector2( 320, 120 )
+shape = SubResource( 8 )
+
+[node name="TopBar" type="TextureButton" parent="UI/CreatureMenu"]
+margin_left = -112.0
+margin_top = 32.0
+margin_right = -64.0
+margin_bottom = 80.0
+texture_normal = ExtResource( 16 )
 
 [node name="Attack" type="TextureButton" parent="UI/CreatureMenu"]
 margin_left = -64.0
@@ -239,6 +352,25 @@ margin_bottom = 48.0
 theme = ExtResource( 5 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Attack"
+align = 1
+valign = 1
+
+[node name="Pass" type="TextureButton" parent="UI/CreatureMenu"]
+margin_left = 64.0
+margin_top = 32.0
+margin_right = 192.0
+margin_bottom = 80.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 9 )
+texture_pressed = ExtResource( 10 )
+texture_hover = ExtResource( 11 )
+
+[node name="Label" type="Label" parent="UI/CreatureMenu/Pass"]
+margin_right = 128.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Pass"
 align = 1
 valign = 1
 
@@ -343,9 +475,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -960.0
-margin_right = 960.0
-margin_bottom = 128.0
+margin_top = 1080.0
+margin_right = 1920.0
+margin_bottom = 1350.0
 texture = ExtResource( 15 )
 
 [node name="Text" type="Label" parent="UI/Dialog"]
