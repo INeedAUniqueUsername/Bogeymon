@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
 [ext_resource path="res://Stoneborn.tscn" type="PackedScene" id=2]
@@ -20,6 +20,8 @@
 [ext_resource path="res://MoveDescBox.png" type="Texture" id=18]
 [ext_resource path="res://IBMPlexMono-Regular.ttf" type="DynamicFontData" id=19]
 [ext_resource path="res://TopBar.png" type="Texture" id=20]
+[ext_resource path="res://Crowscare.tscn" type="PackedScene" id=21]
+[ext_resource path="res://LongButtonDisabled.png" type="Texture" id=22]
 
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 960, 16 )
@@ -191,8 +193,6 @@ position = Vector2( 960, 760 )
 [node name="A" type="Position2D" parent="Left" groups=["Place"]]
 position = Vector2( -280, 0 )
 
-[node name="Scarabold" parent="Left/A" instance=ExtResource( 16 )]
-
 [node name="B" type="Position2D" parent="Left" groups=["Place"]]
 position = Vector2( -460, -64 )
 
@@ -201,7 +201,7 @@ position = Vector2( -460, -64 )
 [node name="C" type="Position2D" parent="Left" groups=["Place"]]
 position = Vector2( -460, 64 )
 
-[node name="Stoneborn" parent="Left/C" instance=ExtResource( 2 )]
+[node name="Scarabold" parent="Left/C" instance=ExtResource( 16 )]
 
 [node name="D" type="Position2D" parent="Left" groups=["Place"]]
 position = Vector2( -640, -128 )
@@ -219,8 +219,6 @@ scale = Vector2( -1, 1 )
 [node name="A" type="Position2D" parent="Right" groups=["Place"]]
 position = Vector2( -280, 0 )
 
-[node name="Stoneborn" parent="Right/A" instance=ExtResource( 2 )]
-
 [node name="B" type="Position2D" parent="Right" groups=["Place"]]
 position = Vector2( -460, -64 )
 
@@ -229,7 +227,7 @@ position = Vector2( -460, -64 )
 [node name="C" type="Position2D" parent="Right" groups=["Place"]]
 position = Vector2( -460, 64 )
 
-[node name="Stoneborn" parent="Right/C" instance=ExtResource( 2 )]
+[node name="Crowscare" parent="Right/C" instance=ExtResource( 21 )]
 
 [node name="D" type="Position2D" parent="Right" groups=["Place"]]
 position = Vector2( -640, -128 )
@@ -244,19 +242,19 @@ position = Vector2( -640, 128 )
 margin_right = 1920.0
 margin_bottom = 1080.0
 
-[node name="Left" type="HBoxContainer" parent="UI"]
-margin_left = 32.0
-margin_top = 32.0
-margin_right = 800.0
-margin_bottom = 224.0
-alignment = 1
+[node name="Left" type="VBoxContainer" parent="UI"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 784.0
+margin_bottom = 208.0
+custom_constants/separation = 0
 
-[node name="Right" type="HBoxContainer" parent="UI"]
-margin_left = 1120.0
-margin_top = 32.0
-margin_right = 1888.0
-margin_bottom = 224.0
-alignment = 1
+[node name="Right" type="VBoxContainer" parent="UI"]
+margin_left = 1264.0
+margin_top = 16.0
+margin_right = 1904.0
+margin_bottom = 208.0
+custom_constants/separation = 0
 
 [node name="SelectTarget" type="TextureButton" parent="UI"]
 visible = false
@@ -356,6 +354,26 @@ text = "Attack"
 align = 1
 valign = 1
 
+[node name="Switch" type="TextureButton" parent="UI/CreatureMenu"]
+visible = false
+margin_left = 192.0
+margin_top = 32.0
+margin_right = 320.0
+margin_bottom = 80.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 9 )
+texture_pressed = ExtResource( 10 )
+texture_hover = ExtResource( 11 )
+
+[node name="Label" type="Label" parent="UI/CreatureMenu/Switch"]
+margin_right = 128.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Switch"
+align = 1
+valign = 1
+
 [node name="Pass" type="TextureButton" parent="UI/CreatureMenu"]
 margin_left = 64.0
 margin_top = 32.0
@@ -389,6 +407,7 @@ theme = ExtResource( 5 )
 texture_normal = ExtResource( 12 )
 texture_pressed = ExtResource( 13 )
 texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 22 )
 
 [node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move0"]
 margin_right = 256.0
@@ -407,6 +426,7 @@ theme = ExtResource( 5 )
 texture_normal = ExtResource( 12 )
 texture_pressed = ExtResource( 13 )
 texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 22 )
 
 [node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move1"]
 margin_right = 256.0
@@ -425,6 +445,7 @@ theme = ExtResource( 5 )
 texture_normal = ExtResource( 12 )
 texture_pressed = ExtResource( 13 )
 texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 22 )
 
 [node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move2"]
 margin_right = 256.0
@@ -443,6 +464,7 @@ theme = ExtResource( 5 )
 texture_normal = ExtResource( 12 )
 texture_pressed = ExtResource( 13 )
 texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 22 )
 
 [node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/Move3"]
 margin_right = 256.0
@@ -450,6 +472,25 @@ margin_bottom = 48.0
 theme = ExtResource( 5 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Move3"
+align = 1
+valign = 1
+
+[node name="PartyStrike" type="TextureButton" parent="UI/CreatureMenu/MoveList"]
+margin_top = 192.0
+margin_right = 256.0
+margin_bottom = 240.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 22 )
+
+[node name="Label" type="Label" parent="UI/CreatureMenu/MoveList/PartyStrike"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Party Strike"
 align = 1
 valign = 1
 

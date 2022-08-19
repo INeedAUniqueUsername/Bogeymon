@@ -35,6 +35,8 @@ var PpTable = {
 	Moves.Feather: 10
 }
 
+var StrikeMoves = [Moves.SnapFreeze]
+
 export(Array, Moves) var moves = [Moves.None, Moves.None, Moves.None, Moves.None]
 
 var pp = {}
@@ -76,17 +78,48 @@ export(int) var hp_max = 40
 onready var hp = hp_max
 var hurt_rate = 5.0
 func snap_freeze(target):
-	var cast = load("res://IceBeamCast.tscn").instance()
-	world.add_child(cast)
-	cast.global_position = $Sprite/FireBeam.global_position
-	yield(cast, "tree_exited")
-	
 	var c = load("res://IceBeamProjectile.tscn").instance()
 	c.source = self
 	world.add_child(c)
 	c.global_position = global_position
 	c.global_position.x = $Sprite/FireBeam.global_position.x
 	c.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
+	yield(c.get_node("Anim"), "animation_finished")
+	
+	var t = Tween.new()
+	
+	var dest = c.global_position + (target.global_position - global_position).normalized() * (512 * 4)
+	t.interpolate_property(c, "global_position", c.global_position, dest, 2.0, Tween.TRANS_QUAD, Tween.EASE_IN)
+	world.add_child(t)
+	t.start()
+	t.connect("tween_all_completed", t, "queue_free")
+	t.connect("tween_all_completed", c, "detonate")
+	var explosion = yield(c, "detonated")
+	var hit = c.hit
+	
+	yield(explosion, "tree_exited")
+
+	if !hit:
+		miss()
+		
+		
+func snap_freeze_party(target: Node2D, attackers: Array, projectile = null):
+	var c = load("res://IceBeamProjectile.tscn").instance()
+	c.source = self
+	world.add_child(c)
+	c.global_position = global_position
+	c.global_position.x = $Sprite/FireBeam.global_position.x
+	c.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
+	
+	if is_instance_valid(projectile):
+		c.armed = false
+		projectile.connect("tree_exiting", c, "arm")
+	if !attackers.empty():
+		var next = attackers.front()
+		attackers = attackers.slice(1, len(attackers))
+		get_tree().create_timer(0.5).connect("timeout", next, "snap_freeze_party", [target, attackers, c])
+	yield(c.get_node("Anim"), "animation_finished")
+	
 	var t = Tween.new()
 	
 	var dest = c.global_position + (target.global_position - global_position).normalized() * (512 * 4)

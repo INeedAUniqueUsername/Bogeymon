@@ -25,10 +25,16 @@ func detonate():
 		hit = true
 	emit_signal("detonated", e)
 	queue_free()
+	
+export(bool) var moving = false
+func arm():
+	yield(get_tree().create_timer(0.2), "timeout")
+	armed = true
+var armed = true
 func _process(delta):
 	if source.cpu:
 		return
-	if Input.is_key_pressed(KEY_ENTER):
+	if Input.is_key_pressed(KEY_ENTER) and armed and moving:
 		detonate()
 func nop(delta):
 	

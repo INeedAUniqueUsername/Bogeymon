@@ -11,8 +11,8 @@ anchor_left = 0.1
 anchor_right = 0.1
 margin_left = -128.0
 margin_top = 32.0
-margin_right = 80.0
-margin_bottom = 224.0
+margin_right = 512.0
+margin_bottom = 80.0
 texture = ExtResource( 1 )
 script = ExtResource( 3 )
 
@@ -26,16 +26,16 @@ custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Creature 1"
 
 [node name="HP" type="Label" parent="."]
-margin_left = 16.0
-margin_top = 48.0
-margin_right = 50.0
-margin_bottom = 85.0
+margin_left = 248.0
+margin_top = 8.0
+margin_right = 282.0
+margin_bottom = 45.0
 theme = ExtResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "HP"
 
 [node name="HpRoller" type="Node2D" parent="."]
-position = Vector2( 32, 67 )
+position = Vector2( 264, 27 )
 script = ExtResource( 6 )
 
 [node name="D4" parent="HpRoller" instance=ExtResource( 5 )]
@@ -74,10 +74,11 @@ amount = 0
 truncate = true
 
 [node name="Status" type="Label" parent="."]
-margin_left = 16.0
-margin_top = 88.0
-margin_right = 118.0
-margin_bottom = 125.0
+margin_left = 440.0
+margin_top = 8.0
+margin_right = 632.0
+margin_bottom = 45.0
 theme = ExtResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Active"
+align = 2
