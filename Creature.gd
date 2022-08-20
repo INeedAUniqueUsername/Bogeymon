@@ -203,13 +203,12 @@ func use_spear_thrust(target:Node2D):
 	yield(Game.inc_tw(world, self, "global_position", disp, 1), "tween_all_completed")
 	
 	
-	var ch = preload("res://StabCrosshair.tscn").instance()
+	var ch = preload("res://CrowSlashCrosshair.tscn").instance()
 	world.add_child(ch)
 	ch.target = target
 	ch.global_position = target.global_position
 	
 	yield(ch, "tree_exiting")
-	
 	
 	if !ch.hit:
 		miss()
