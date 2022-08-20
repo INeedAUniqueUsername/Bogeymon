@@ -99,6 +99,8 @@ func on_roller_stopped(c, box):
 		return
 	c.faint()
 	box.statusLabel.text = "Knocked out!"
+	if c == creature:
+		emit_signal("creature_done")
 func creature_damaged(proj, c, box):
 	box.shake()
 	if !proj.is_in_group("Impact"):

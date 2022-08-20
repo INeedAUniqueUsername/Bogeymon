@@ -23,11 +23,10 @@ var NameTable = {
 }
 var DescTable = {
 	Moves.SnapFreeze: "Casts a freezing orb at the target. Press Enter to detonate the orb when it reaches the target",
-	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots for double damage. You have 2.5 seconds to aim before throwing.",
-	Moves.Sunblast: "Fires a burning ray of sunlight straight ahead. Can hit eyespots for double damage.",
+	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots. You have 2.5 seconds to aim before throwing.",
+	Moves.Sunblast: "Fires a burning ray of sunlight straight ahead. Can hit eyespots.",
 	Moves.DungBowl: "Rolls a large ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
-	Moves.SpearThrust: "A melee attack that hits a spot on the target. Use arrow keys to aim for 1 seconds. Press Enter when the small crosshair enters the large crosshair to strike!"
-	
+	Moves.SpearThrust: "Strikes the target at a specific spot. Can hit sweetspots. Use arrow keys to aim for 1 second. Press Enter when the X is within the crosshair to strike!"
 }
 var PpTable = {
 	Moves.None: 0,
@@ -195,8 +194,14 @@ func dung_bowl():
 	yield(get_tree().create_timer(5), "timeout")
 	
 func use_spear_thrust(target:Node2D):
+	
+	var spear = load("res://Spear.tscn").instance()
+	$SpearPos.add_child(spear)
+	spear.position = Vector2(0, 0)
+	
 	var disp = (target.global_position + target.get_forward()*256) - global_position
-	yield(Game.inc_tw(world, self, "global_position", disp, 1.5), "tween_all_completed")
+	yield(Game.inc_tw(world, self, "global_position", disp, 1), "tween_all_completed")
+	
 	
 	var ch = preload("res://StabCrosshair.tscn").instance()
 	world.add_child(ch)
@@ -204,11 +209,16 @@ func use_spear_thrust(target:Node2D):
 	ch.global_position = target.global_position
 	
 	yield(ch, "tree_exiting")
+	
+	
 	if !ch.hit:
 		miss()
 	
-	yield(Game.inc_tw(world, self, "global_position", -disp, 1.5), "tween_all_completed")
+	yield(Game.inc_tw(world, self, "global_position", -disp, 1), "tween_all_completed")
+	
+	spear.queue_free()
 	pass
+	
 func miss():
 	var m = load("res://RatingMiss.tscn").instance()
 	world.add_child(m)

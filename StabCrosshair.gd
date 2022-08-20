@@ -2,6 +2,7 @@ extends Node2D
 
 func _ready():
 	rotation = randf() * 2 * PI
+	$Crosshair.global_rotation = 0
 var attacking = false
 func start_attacking():
 	if attacking:
