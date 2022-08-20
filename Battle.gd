@@ -318,6 +318,13 @@ func handle_move(i):
 				
 			yield(showMessage(msg), "completed")
 			yield(creature.use_spear_thrust(target), "completed")
+		Moves.CrowSlash:
+			var target = yield(request_target(get_opposing_creatures(), true), "completed")
+			if !target:
+				return
+				
+			yield(showMessage(msg), "completed")
+			yield(creature.use_crow_slash(target), "completed")
 		_:
 			assert(false)
 	hideMessage()

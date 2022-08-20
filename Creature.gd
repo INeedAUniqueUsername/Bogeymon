@@ -9,6 +9,7 @@ enum Moves {
 	Sunblast,
 	DungBowl,
 	SpearThrust,
+	CrowSlash,
 	Lunge,
 	Feather
 }
@@ -18,6 +19,7 @@ var NameTable = {
 	Moves.Sunblast: "Sunblast",
 	Moves.DungBowl: "Dung Bowl",
 	Moves.SpearThrust: "Spear Thrust",
+	Moves.CrowSlash: "Crow Slash",
 	Moves.Lunge: "Lunge",
 	Moves.Feather: "Feather"
 }
@@ -26,7 +28,8 @@ var DescTable = {
 	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots. You have 2.5 seconds to aim before throwing.",
 	Moves.Sunblast: "Fires a burning ray of sunlight straight ahead. Can hit eyespots.",
 	Moves.DungBowl: "Rolls a large ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
-	Moves.SpearThrust: "Strikes the target at a specific spot. Can hit sweetspots. Use arrow keys to aim for 1 second. Press Enter when the X is within the crosshair to strike!"
+	Moves.SpearThrust: "Strikes the target at a specific spot. Can hit sweetspots. Use arrow keys to aim. Press Enter when the marker is within the crosshair to hit!",
+	Moves.CrowSlash: "Strikes the target at multiple spots. Can hit sweetspots. Use the arrow keys to aim. Press Enter when the marker is within its crosshair to hit!"
 }
 var PpTable = {
 	Moves.None: 0,
@@ -34,7 +37,8 @@ var PpTable = {
 	Moves.BrickThrow: 15,
 	Moves.Sunblast: 15,
 	Moves.DungBowl: 10,
-	Moves.SpearThrust: 10,
+	Moves.SpearThrust: 20,
+	Moves.CrowSlash: 10,
 	Moves.Lunge: 10,
 	Moves.Feather: 10
 }
@@ -203,7 +207,7 @@ func use_spear_thrust(target:Node2D):
 	yield(Game.inc_tw(world, self, "global_position", disp, 1), "tween_all_completed")
 	
 	
-	var ch = preload("res://CrowSlashCrosshair.tscn").instance()
+	var ch = preload("res://StabCrosshair.tscn").instance()
 	world.add_child(ch)
 	ch.target = target
 	ch.global_position = target.global_position
@@ -216,7 +220,23 @@ func use_spear_thrust(target:Node2D):
 	yield(Game.inc_tw(world, self, "global_position", -disp, 1), "tween_all_completed")
 	
 	spear.queue_free()
-	pass
+	
+func use_crow_slash(target:Node2D):
+	var disp = (target.global_position + target.get_forward()*256) - global_position
+	yield(Game.inc_tw(world, self, "global_position", disp, 1), "tween_all_completed")
+	
+	
+	var ch = preload("res://CrowSlashCrosshair.tscn").instance()
+	world.add_child(ch)
+	ch.target = target
+	ch.global_position = target.global_position
+	
+	yield(ch, "tree_exiting")
+	
+	if !ch.hit:
+		miss()
+	
+	yield(Game.inc_tw(world, self, "global_position", -disp, 1), "tween_all_completed")
 	
 func miss():
 	var m = load("res://RatingMiss.tscn").instance()

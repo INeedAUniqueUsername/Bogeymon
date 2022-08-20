@@ -11,15 +11,26 @@ func start_attacking():
 		return
 	attacking = true
 	
+	var last = null
 	for i in range(5):
 		var p = $Marker.duplicate()
+		
+		var r = randf() * 2 * PI
+		p.rotate(r)
+		p.get_node("Crosshair").rotate(-r)
+		
 		p.get_node("Anim").play("Attack")
 		p.get_node("Wait").connect("tree_exiting", self, "set", ["marker", p])
 		world.add_child(p)
 		p.global_position = global_position
-		yield(get_tree().create_timer(0.5), "timeout")
-	$Anim.play("Disappear")
-	
+		
+		if i == 4:
+			$Anim.play("Disappear")
+		else:
+			yield(get_tree().create_timer(0.5), "timeout")
+		last = p
+	yield(last, "tree_exiting")
+	queue_free()
 var marker
 func _physics_process(delta):
 	var d = 256
@@ -49,9 +60,11 @@ var damage_hp
 var sweet = false
 func attack():
 	var area = marker.get_node("Pivot/Sprite/Area")
-	if area.overlaps_area(marker.get_node("Crosshair/Area")):
-		var dist = marker.get_node("Pivot/Sprite").global_position.distance_to($Crosshair.global_position)
-		damage_hp = max(5, 20 - randi()%int(dist/4))
+	
+	var crosshair = marker.get_node("Crosshair")
+	if area.overlaps_area(crosshair.get_node("Area")):
+		var dist = marker.get_node("Pivot/Sprite").global_position.distance_to(crosshair.global_position)
+		damage_hp = max(4, 10 - randi()%int(dist/6))
 		
 		for a in area.get_overlapping_areas():
 			if !('creature' in a):
