@@ -10,3 +10,6 @@ func _physics_process(delta):
 		position.x += d * delta
 	if Input.is_key_pressed(KEY_DOWN):
 		position.y += d * delta
+
+func appear():
+	$Anim.play("Fade")

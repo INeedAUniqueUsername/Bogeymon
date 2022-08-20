@@ -150,7 +150,9 @@ func request_target(targets, allowCancel = true):
 		var ch = load("res://TempCrosshair.tscn").instance()
 		ch.global_position = c.global_position
 		add_child(ch)
-		arrow.connect("tree_exiting", ch.get_node("Anim"), "play", ["Disappear"])
+		ch.selectColor = Color(1, 0, 0)
+		arrow.connect("tree_exiting", ch, "show_selected_single", [arrow, c])
+		arrow.connect("tree_exiting", ch, "dismiss")
 	$UI/SelectTarget.show()
 	
 	$UI/SelectTarget/Cancel.connect("pressed", arrow, "queue_free")
@@ -178,7 +180,7 @@ func request_target_multi(targets, green = false):
 		ch.global_position = c.global_position
 		add_child(ch)
 		ch.selectColor = Color(0, 1, 0)
-		arrow.connect("selection_changed", ch, "show_selected", [arrow, c])
+		arrow.connect("selection_changed", ch, "show_selected_multi", [arrow, c])
 		arrow.connect("tree_exiting", ch, "dismiss")
 	$UI/SelectTargetMulti.show()
 	
@@ -243,7 +245,6 @@ func handle_move(i):
 	var m = creature.moves[i]
 	
 	if strikeMode:
-		
 		var allies = get_allies_for_strike(m)
 		if allies.empty():
 			return
@@ -265,6 +266,14 @@ func handle_move(i):
 					
 				yield(showMessage(msg), "completed")
 				yield(creature.use_snap_freeze(target, attackers), "completed")
+				
+			Moves.BrickThrow:
+				var target = yield(request_target(get_opposing_creatures(), true), "completed")
+				if !target:
+					return
+					
+				yield(showMessage(msg), "completed")
+				yield(creature.use_brick_throw(target, attackers), "completed")
 				
 			_:
 				assert(false)
@@ -292,13 +301,21 @@ func handle_move(i):
 				return
 				
 			yield(showMessage(msg), "completed")
-			yield(creature.brick_throw(target), "completed")
+			yield(creature.use_brick_throw(target), "completed")
 		Moves.Sunblast:
 			yield(showMessage(msg), "completed")
 			yield(creature.sunblast(), "completed")
 		Moves.DungBowl:
 			yield(showMessage(msg), "completed")
 			yield(creature.dung_bowl(), "completed")
+			
+		Moves.SpearThrust:
+			var target = yield(request_target(get_opposing_creatures(), true), "completed")
+			if !target:
+				return
+				
+			yield(showMessage(msg), "completed")
+			yield(creature.use_spear_thrust(target), "completed")
 		_:
 			assert(false)
 	hideMessage()

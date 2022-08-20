@@ -3,7 +3,7 @@ extends Node2D
 var charging = false
 var rolling = false
 
-var speed = 0
+onready var speed = 12
 
 var direction
 var prevEnter = false
@@ -37,7 +37,7 @@ func roll():
 	$Line2D.hide()
 	charging = false
 	rolling = true
-	damage_hp = speed / 2
+	damage_hp = speed / 3
 	get_tree().create_timer(4).connect("timeout", self, "queue_free")
 
 
@@ -46,14 +46,23 @@ var damage_hp = 10
 var source
 var hit = false
 var hitCreatures = []
-func _on_area_entered(area):
+func _on_area_entered(area : Area2D):
+	#NOTE: Ground must make contact before body, otherwise hit doesn't register
+	#workaround: ground area must be wider than body
 	if 'creature' in area:
 		#if hit: return
 		var c = area.creature
-		if c == source: return
-		if !$Ground.overlaps_area(c.groundArea): return
+		if c == source:
+			return
 		
-		if hitCreatures.has(c): return
+		var n = c.name
+		if n == "Crowscare":
+			pass
+		var aa = area.name
+		if !$Ground.overlaps_area(c.groundArea):
+			return
+		if hitCreatures.has(c):
+			return
 		hitCreatures.append(c)
 		
 		hit = true

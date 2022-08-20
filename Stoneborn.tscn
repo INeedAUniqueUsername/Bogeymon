@@ -294,7 +294,6 @@ creature = NodePath("../..")
 shape = SubResource( 8 )
 
 [node name="Body" type="Area2D" parent="Sprite"]
-visible = false
 position = Vector2( 0, -32 )
 script = ExtResource( 3 )
 creature = NodePath("../..")

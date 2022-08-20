@@ -31,22 +31,30 @@ func _ready():
 	set_index(0)
 
 var busy = false
-var prevEnter = false
-
-var prevEsc = false
+var prevKeys = {
+	KEY_ENTER: false,
+	KEY_ESCAPE: false,
+	KEY_SHIFT: false
+}
 func _process(delta):
 	var enter = Input.is_key_pressed(KEY_ENTER)
 	var esc = Input.is_key_pressed(KEY_ESCAPE)
-	if prevEnter and !enter:
+	var shift = Input.is_key_pressed(KEY_SHIFT)
+	if prevKeys[KEY_ENTER] and !enter:
 		select()
 	elif Input.is_key_pressed(KEY_DOWN) and !busy:
 		next()
 	elif Input.is_key_pressed(KEY_UP) and !busy:
 		prev()
-	elif prevEsc and !esc and allowCancel:
+	elif prevKeys[KEY_ESCAPE] and !esc and allowCancel:
 		queue_free()
-	prevEnter = enter
-	prevEsc = esc
+	elif prevKeys[KEY_SHIFT] and !shift and (!targets.empty() or allowCancel):
+		queue_free()
+	prevKeys = {
+		KEY_ENTER: enter,
+		KEY_ESCAPE: esc,
+		KEY_SHIFT: shift
+	}
 func next():
 	set_index(index + 1)
 	cooldown()

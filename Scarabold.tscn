@@ -245,7 +245,7 @@ tracks/1/keys = {
 [node name="Scarabold" type="Node2D"]
 script = ExtResource( 1 )
 species = "Scarabold"
-moves = [ 2, 4, 0, 0 ]
+moves = [ 2, 4, 5, 0 ]
 
 [node name="Ground" type="Area2D" parent="."]
 script = ExtResource( 3 )

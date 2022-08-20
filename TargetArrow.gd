@@ -32,11 +32,13 @@ var busy = false
 
 var prevKey = {
 	KEY_ENTER: false,
-	KEY_ESCAPE: false
+	KEY_ESCAPE: false,
+	KEY_SHIFT: false
 }
 func _process(delta):
 	var enter = Input.is_key_pressed(KEY_ENTER)
 	var esc = Input.is_key_pressed(KEY_ESCAPE)
+	var shift = Input.is_key_pressed(KEY_SHIFT)
 	if !enter and prevKey[KEY_ENTER]:
 		select()
 	elif Input.is_key_pressed(KEY_DOWN) and !busy:
@@ -45,9 +47,12 @@ func _process(delta):
 		prev()
 	elif !esc and prevKey[KEY_ESCAPE] and allowCancel:
 		queue_free()
+	elif !shift and prevKey[KEY_SHIFT] and allowCancel:
+		queue_free()
 	prevKey = {
 		KEY_ENTER: enter,
-		KEY_ESCAPE: esc
+		KEY_ESCAPE: esc,
+		KEY_SHIFT: shift
 	}
 func next():
 	set_index(index + 1)
