@@ -29,15 +29,26 @@ func _ready():
 	set_index(0)
 
 var busy = false
+
+var prevKey = {
+	KEY_ENTER: false,
+	KEY_ESCAPE: false
+}
 func _process(delta):
-	if Input.is_key_pressed(KEY_ENTER):
+	var enter = Input.is_key_pressed(KEY_ENTER)
+	var esc = Input.is_key_pressed(KEY_ESCAPE)
+	if !enter and prevKey[KEY_ENTER]:
 		select()
 	elif Input.is_key_pressed(KEY_DOWN) and !busy:
 		next()
 	elif Input.is_key_pressed(KEY_UP) and !busy:
 		prev()
-	elif Input.is_key_pressed(KEY_ESCAPE) and allowCancel:
+	elif !esc and prevKey[KEY_ESCAPE] and allowCancel:
 		queue_free()
+	prevKey = {
+		KEY_ENTER: enter,
+		KEY_ESCAPE: esc
+	}
 func next():
 	set_index(index + 1)
 	cooldown()

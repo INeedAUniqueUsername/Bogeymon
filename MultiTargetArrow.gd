@@ -2,6 +2,8 @@ extends Node2D
 var creatures = []
 var index = 0 setget set_index, get_index
 
+onready var sprite = $Y/Sprite
+
 var tween = null
 func set_index(i):
 	if !creatures or creatures.empty():
@@ -30,17 +32,21 @@ func _ready():
 
 var busy = false
 var prevEnter = false
+
+var prevEsc = false
 func _process(delta):
 	var enter = Input.is_key_pressed(KEY_ENTER)
-	if enter and !prevEnter:
+	var esc = Input.is_key_pressed(KEY_ESCAPE)
+	if prevEnter and !enter:
 		select()
 	elif Input.is_key_pressed(KEY_DOWN) and !busy:
 		next()
 	elif Input.is_key_pressed(KEY_UP) and !busy:
 		prev()
-	elif Input.is_key_pressed(KEY_ESCAPE) and allowCancel:
+	elif prevEsc and !esc and allowCancel:
 		queue_free()
 	prevEnter = enter
+	prevEsc = esc
 func next():
 	set_index(index + 1)
 	cooldown()
@@ -48,6 +54,7 @@ func prev():
 	set_index(index - 1)
 	cooldown()
 	
+signal selection_changed()
 var targets = []
 #var allowSelect = true
 func select():
@@ -56,7 +63,7 @@ func select():
 		targets.erase(c)
 	else:
 		targets.append(c)
-		
+	emit_signal("selection_changed")
 	#allowSelect = false
 	#yield(get_tree().create_timer(0.4), "timeout")
 	#allowSelect = true

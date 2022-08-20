@@ -29,6 +29,7 @@ func _ready():
 	strike.connect("pressed", self, "toggle_strike")
 	strike.connect("mouse_entered", self, "show_strike_desc")
 	strike.connect("mouse_exited", moveDesc, "hide")
+	update_strike_label()
 	
 	for c in creatures:
 		c.summon()
@@ -81,7 +82,14 @@ func drag_menu():
 			
 func toggle_strike():
 	strikeMode = !strikeMode
+	update_strike_label()
+	show_strike_desc()
 	update_move_list()
+func update_strike_label():
+	$UI/CreatureMenu/MoveList/PartyStrike/Label.text = {
+		true: "*Party Move*",
+		false: "*Solo Move*"
+	}[strikeMode]
 const StatBox = preload("res://InfoBox.tscn")
 func creature_hp_changed(c, box):
 	box.hpRoller.set_amount(c.hp, c.hurt_rate)
@@ -122,9 +130,9 @@ func update_move_list():
 	for i in range(4):
 		var button = b[i]
 		var m = creature.moves[i]
-		if m != creature.Moves.None and creature.pp[m] > 0:
+		if m != creature.Moves.None:
 			button.get_node("Label").text = creature.NameTable[m]
-			button.disabled = strikeMode and (!creature.StrikeMoves.has(m) or get_allies_for_strike(m).empty())
+			button.disabled = !(creature.pp[m] > 0) or (strikeMode and (!creature.StrikeMoves.has(m) or get_allies_for_strike(m).empty()))
 			continue
 		
 		button.get_node("Label").text = ""
@@ -145,6 +153,7 @@ func request_target(targets, allowCancel = true):
 		arrow.connect("tree_exiting", ch.get_node("Anim"), "play", ["Disappear"])
 	$UI/SelectTarget.show()
 	
+	$UI/SelectTarget/Cancel.connect("pressed", arrow, "queue_free")
 	$UI/SelectTarget.connect("pressed", arrow, "select")
 	$UI/SelectTarget/Prev.connect("pressed", arrow, "prev")
 	$UI/SelectTarget/Next.connect("pressed", arrow, "next")
@@ -153,26 +162,33 @@ func request_target(targets, allowCancel = true):
 	$UI/SelectTarget.hide()
 	return arrow.target
 	
-func request_target_multi(targets):
+func request_target_multi(targets, green = false):
 	var arrow = load("res://MultiTargetArrow.tscn").instance()
 	arrow.creatures = targets
 	arrow.allowCancel = true
 	arrow.global_position = creature.global_position
 	add_child(arrow)
 	
+	
+	if green:
+		arrow.sprite.texture = load("res://TargetArrowGreen.png")
+	
 	for c in targets:
 		var ch = load("res://TempCrosshair.tscn").instance()
 		ch.global_position = c.global_position
 		add_child(ch)
-		arrow.connect("tree_exiting", ch.get_node("Anim"), "play", ["Disappear"])
-	$UI/SelectTarget.show()
+		ch.selectColor = Color(0, 1, 0)
+		arrow.connect("selection_changed", ch, "show_selected", [arrow, c])
+		arrow.connect("tree_exiting", ch, "dismiss")
+	$UI/SelectTargetMulti.show()
 	
-	$UI/SelectTarget.connect("pressed", arrow, "select")
-	$UI/SelectTarget/Prev.connect("pressed", arrow, "prev")
-	$UI/SelectTarget/Next.connect("pressed", arrow, "next")
+	$UI/SelectTargetMulti/Cancel.connect("pressed", arrow, "queue_free")
+	$UI/SelectTargetMulti.connect("pressed", arrow, "select")
+	$UI/SelectTargetMulti/Prev.connect("pressed", arrow, "prev")
+	$UI/SelectTargetMulti/Next.connect("pressed", arrow, "next")
 	
 	yield(arrow, "tree_exiting")
-	$UI/SelectTarget.hide()
+	$UI/SelectTargetMulti.hide()
 	return arrow.targets
 	
 func get_opposing_creatures():
@@ -211,7 +227,10 @@ func show_move_desc(i):
 	
 func show_strike_desc():
 	var d = $UI/CreatureMenu/MoveList/Description
-	d.get_node("Label").text = "Allows multiple allied Bogeymon to use the same move in unison."
+	d.get_node("Label").text = {
+		false: "This Bogeymon uses the chosen move by itself.",
+		true: "This Bogeymon calls available allies to use the chosen move in unison."
+	}[strikeMode]
 	d.show()
 func choose_move(i):
 	$UI/CreatureMenu.hide()
@@ -228,12 +247,13 @@ func handle_move(i):
 		var allies = get_allies_for_strike(m)
 		if allies.empty():
 			return
-		var attackers = yield(request_target_multi(allies), "completed")
+		var attackers = yield(request_target_multi(allies, true), "completed")
 		if attackers.empty():
 			return
 		
+		# DO NOT PASS IN CREATURES ARRAY
 		#debounce keys
-		yield(get_tree().create_timer(1.0), "timeout")
+		#yield(get_tree().create_timer(1.0), "timeout")
 		
 		var msg = "The party used %s!" % [creature.NameTable[m].to_upper()]
 		
@@ -244,7 +264,7 @@ func handle_move(i):
 					return
 					
 				yield(showMessage(msg), "completed")
-				yield(creature.snap_freeze_party(target, attackers), "completed")
+				yield(creature.use_snap_freeze(target, attackers), "completed")
 				
 			_:
 				assert(false)
@@ -265,7 +285,7 @@ func handle_move(i):
 				return
 				
 			yield(showMessage(msg), "completed")
-			yield(creature.snap_freeze(target), "completed")
+			yield(creature.use_snap_freeze(target), "completed")
 		Moves.BrickThrow:
 			var target = yield(request_target(get_opposing_creatures(), true), "completed")
 			if !target:

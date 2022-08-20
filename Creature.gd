@@ -77,33 +77,7 @@ signal damaged(proj)
 export(int) var hp_max = 40
 onready var hp = hp_max
 var hurt_rate = 5.0
-func snap_freeze(target):
-	var c = load("res://IceBeamProjectile.tscn").instance()
-	c.source = self
-	world.add_child(c)
-	c.global_position = global_position
-	c.global_position.x = $Sprite/FireBeam.global_position.x
-	c.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
-	yield(c.get_node("Anim"), "animation_finished")
-	
-	var t = Tween.new()
-	
-	var dest = c.global_position + (target.global_position - global_position).normalized() * (512 * 4)
-	t.interpolate_property(c, "global_position", c.global_position, dest, 2.0, Tween.TRANS_QUAD, Tween.EASE_IN)
-	world.add_child(t)
-	t.start()
-	t.connect("tween_all_completed", t, "queue_free")
-	t.connect("tween_all_completed", c, "detonate")
-	var explosion = yield(c, "detonated")
-	var hit = c.hit
-	
-	yield(explosion, "tree_exited")
-
-	if !hit:
-		miss()
-		
-		
-func snap_freeze_party(target: Node2D, attackers: Array, projectile = null):
+func use_snap_freeze(target: Node2D, attackers: Array = [], projectile : Node2D = null):
 	var c = load("res://IceBeamProjectile.tscn").instance()
 	c.source = self
 	world.add_child(c)
@@ -115,9 +89,15 @@ func snap_freeze_party(target: Node2D, attackers: Array, projectile = null):
 		c.armed = false
 		projectile.connect("tree_exiting", c, "arm")
 	if !attackers.empty():
+		_snap_freeze(target, c)
+		
 		var next = attackers.front()
 		attackers = attackers.slice(1, len(attackers))
-		get_tree().create_timer(0.5).connect("timeout", next, "snap_freeze_party", [target, attackers, c])
+		yield(get_tree().create_timer(0.5), "timeout")
+		yield(next.use_snap_freeze(target, attackers, c), "completed")
+	else:
+		yield(_snap_freeze(target, c), "completed")
+func _snap_freeze(target, c):
 	yield(c.get_node("Anim"), "animation_finished")
 	
 	var t = Tween.new()
@@ -135,6 +115,7 @@ func snap_freeze_party(target: Node2D, attackers: Array, projectile = null):
 
 	if !hit:
 		miss()
+
 func brick_throw(target):
 	var c = load("res://BrickThrowCrosshair.tscn").instance()
 	world.add_child(c)

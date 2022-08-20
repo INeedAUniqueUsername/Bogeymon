@@ -193,6 +193,8 @@ position = Vector2( 960, 760 )
 [node name="A" type="Position2D" parent="Left" groups=["Place"]]
 position = Vector2( -280, 0 )
 
+[node name="Stoneborn" parent="Left/A" instance=ExtResource( 2 )]
+
 [node name="B" type="Position2D" parent="Left" groups=["Place"]]
 position = Vector2( -460, -64 )
 
@@ -269,6 +271,26 @@ texture_normal = ExtResource( 12 )
 texture_pressed = ExtResource( 13 )
 texture_hover = ExtResource( 14 )
 
+[node name="Cancel" type="TextureButton" parent="UI/SelectTarget"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -128.0
+margin_top = -48.0
+margin_right = 128.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
+
+[node name="Label" type="Label" parent="UI/SelectTarget/Cancel"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Cancel"
+align = 1
+valign = 1
+
 [node name="Prev" type="TextureButton" parent="UI/SelectTarget"]
 anchor_left = 0.5
 anchor_right = 0.5
@@ -315,6 +337,88 @@ margin_bottom = 48.0
 theme = ExtResource( 5 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Select Target"
+align = 1
+valign = 1
+
+[node name="SelectTargetMulti" type="TextureButton" parent="UI"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -128.0
+margin_top = 384.0
+margin_right = 128.0
+margin_bottom = 432.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
+
+[node name="Cancel" type="TextureButton" parent="UI/SelectTargetMulti"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -128.0
+margin_top = 48.0
+margin_right = 128.0
+margin_bottom = 96.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 13 )
+texture_hover = ExtResource( 14 )
+
+[node name="Label" type="Label" parent="UI/SelectTargetMulti/Cancel"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Done"
+align = 1
+valign = 1
+
+[node name="Prev" type="TextureButton" parent="UI/SelectTargetMulti"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -192.0
+margin_right = -128.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+
+[node name="Label" type="Label" parent="UI/SelectTargetMulti/Prev"]
+margin_right = 64.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "<-"
+align = 1
+valign = 1
+
+[node name="Next" type="TextureButton" parent="UI/SelectTargetMulti"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 128.0
+margin_right = 192.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+
+[node name="Label" type="Label" parent="UI/SelectTargetMulti/Next"]
+margin_right = 64.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "->"
+align = 1
+valign = 1
+
+[node name="Label" type="Label" parent="UI/SelectTargetMulti"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Select Targets"
 align = 1
 valign = 1
 
@@ -490,7 +594,7 @@ margin_right = 256.0
 margin_bottom = 48.0
 theme = ExtResource( 5 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Party Strike"
+text = "*Single Move*"
 align = 1
 valign = 1
 
@@ -517,9 +621,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -960.0
-margin_right = 960.0
-margin_bottom = 270.0
+margin_top = 1080.0
+margin_right = 1920.0
+margin_bottom = 1350.0
 texture = ExtResource( 15 )
 
 [node name="Text" type="Label" parent="UI/Dialog"]
