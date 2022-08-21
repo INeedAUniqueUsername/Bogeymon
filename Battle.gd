@@ -134,6 +134,9 @@ func _ready():
 				continue
 			creature = c
 			update_menu()
+			
+			trainers[c.place.side].get_node("Anim").play("Think")
+			trainers[(c.place.side+1)%2].get_node("Anim").play("Idle")
 			if c.cpu:
 				var moves = c.moves.duplicate()
 				moves.shuffle()
@@ -141,6 +144,9 @@ func _ready():
 				for m in moves:
 					if m == Moves.None:
 						continue
+						
+					trainers[(c.place.side+1)%2].get_node("Anim").play("Cross")
+					trainers[c.place.side].get_node("Anim").play("Point")
 					var msg = "%s used %s!" % [creature.species, creature.NameTable[m].to_upper()]
 					match m:
 						Moves.SnapFreeze:
@@ -451,6 +457,9 @@ func show_strike_desc():
 	d.show()
 func choose_move(i):
 	$UI/CreatureMenu.hide()
+	
+	trainers[creature.place.side].get_node("Anim").play("Point")
+	trainers[(creature.place.side + 1)%2].get_node("Anim").play("Cross")
 	if yield(handle_move(i), "completed"):
 		emit_signal("creature_done")
 		return
