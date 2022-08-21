@@ -12,7 +12,6 @@ func _ready():
 			load("res://BigButtonNormalCyan.png"),
 			load("res://BigButtonNormalPink.png")
 		][Game.innovation]
-	
 		return
 	
 	for b in [$Prompt/Bold, $Prompt/Brash]:

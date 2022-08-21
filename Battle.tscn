@@ -1,8 +1,9 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://Background.png" type="Texture" id=1]
+[ext_resource path="res://PlayerCyan.png" type="Texture" id=2]
 [ext_resource path="res://Battle.gd" type="Script" id=3]
-[ext_resource path="res://Player.png" type="Texture" id=4]
+[ext_resource path="res://PlayerPink.png" type="Texture" id=4]
 [ext_resource path="res://Monospace.tres" type="Theme" id=5]
 [ext_resource path="res://SmallButtonPressed.png" type="Texture" id=6]
 [ext_resource path="res://SmallButtonHover.png" type="Texture" id=7]
@@ -19,6 +20,132 @@
 [ext_resource path="res://IBMPlexMono-Regular.ttf" type="DynamicFontData" id=19]
 [ext_resource path="res://TopBar.png" type="Texture" id=20]
 [ext_resource path="res://LongButtonDisabled.png" type="Texture" id=22]
+
+[sub_resource type="Animation" id=15]
+resource_name = "Idle"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=16]
+resource_name = "Point"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 4, 5 ]
+}
+
+[sub_resource type="Animation" id=17]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=18]
+resource_name = "Think"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 2, 3 ]
+}
+
+[sub_resource type="Animation" id=19]
+resource_name = "Idle"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=20]
+resource_name = "Point"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 4, 5 ]
+}
+
+[sub_resource type="Animation" id=21]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=22]
+resource_name = "Think"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 2, 3 ]
+}
 
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 960, 16 )
@@ -366,15 +493,44 @@ z_index = -5
 texture = ExtResource( 1 )
 centered = false
 
-[node name="Shadow" type="Sprite" parent="."]
+[node name="Player" type="Sprite" parent="."]
+position = Vector2( 520, 440 )
+texture = ExtResource( 2 )
+hframes = 6
+
+[node name="Anim" type="AnimationPlayer" parent="Player"]
+autoplay = "Idle"
+anims/Idle = SubResource( 15 )
+anims/Point = SubResource( 16 )
+anims/RESET = SubResource( 17 )
+anims/Think = SubResource( 18 )
+
+[node name="Shadow" type="Sprite" parent="Player"]
 self_modulate = Color( 1, 1, 1, 0.2 )
-position = Vector2( 392, 488 )
+position = Vector2( 0, 96 )
 scale = Vector2( 0.5, 0.2 )
+z_index = -1
 texture = ExtResource( 17 )
 
-[node name="PlayerSprite" type="Sprite" parent="."]
-position = Vector2( 392, 392 )
+[node name="Opponent" type="Sprite" parent="."]
+position = Vector2( 1400, 440 )
+scale = Vector2( -1, 1 )
 texture = ExtResource( 4 )
+hframes = 6
+
+[node name="Anim" type="AnimationPlayer" parent="Opponent"]
+autoplay = "Idle"
+anims/Idle = SubResource( 19 )
+anims/Point = SubResource( 20 )
+anims/RESET = SubResource( 21 )
+anims/Think = SubResource( 22 )
+
+[node name="Shadow" type="Sprite" parent="Opponent"]
+self_modulate = Color( 1, 1, 1, 0.2 )
+position = Vector2( 0, 96 )
+scale = Vector2( 0.5, 0.2 )
+z_index = -1
+texture = ExtResource( 17 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0

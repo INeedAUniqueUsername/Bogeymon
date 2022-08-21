@@ -49,7 +49,15 @@ func place_creature(c):
 	c.connect("damaged", self, "creature_damaged", [c, box])
 	box.hpRoller.connect("roller_stopped", self, "on_roller_stopped", [c, box])
 	
+onready var trainers = [$Player, $Opponent]
 func _ready():
+	
+	if Game.innovation == 1:
+		var pt = $Player.texture
+		var ot = $Opponent.texture
+		$Player.texture = ot
+		$Opponent.texture = pt
+		
 	randomize()
 	
 	$UI/Pause/Restart.connect("pressed", self, "restart")
