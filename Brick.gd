@@ -1,5 +1,7 @@
 extends Node2D
 
+onready var groundArea = $Ground
+
 var sweet = false
 var damage_hp = 20
 var source

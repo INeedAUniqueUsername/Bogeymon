@@ -33,7 +33,7 @@ var NameTable = {
 var DescTable = {
 	Moves.SnapFreeze: "Casts a freezing orb at the target. Press Enter to detonate the orb when it reaches the target",
 	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots. You have 2.5 seconds to aim before throwing.",
-	Moves.Sunblast: "Fires a harsh, burning ray of discomfort straight ahead. Can hit eyespots.",
+	Moves.Sunblast: "Fires a harsh, burning ray of disagreement straight ahead. Can hit eyespots.",
 	Moves.DungBowl: "Rolls a large ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
 	Moves.SpearThrust: "Strikes the target at a specific spot. Can hit sweetspots. Use arrow keys to aim. Press Enter when the marker is within the crosshair to hit!",
 	Moves.CrowSlash: "Strikes the target at multiple spots. Can hit sweetspots. Use the arrow keys to aim. Press Enter when the marker is within its crosshair to hit!"
@@ -50,7 +50,7 @@ var PpTable = {
 	Moves.Feather: 10
 }
 
-var StrikeMoves = [Moves.SnapFreeze, Moves.BrickThrow]
+var PartyMoves = [Moves.Sunblast, Moves.SnapFreeze, Moves.BrickThrow, Moves.DungBowl]
 
 export(Array, Moves) var moves = [Moves.None, Moves.None, Moves.None, Moves.None]
 
@@ -94,6 +94,9 @@ func summon():
 		yield($Pose, "animation_finished")
 		$Pose.play("Idle")
 		var s = load("res://SummonSparkles.tscn").instance()
+		
+		if !is_instance_valid(world):
+			return
 		world.add_child(s)
 		s.global_position = $Center.global_position
 
@@ -154,11 +157,14 @@ func allow_dodge(flag: Node):
 
 var shield : Node2D = null
 func allow_defend(flag: Node):
+	#if shield:
+	#	return
 	shield = preload("res://Shield.tscn").instance()
 	add_child(shield)
 	shield.global_position = $Center.global_position
 	yield(flag, "tree_exiting")
-	shield.queue_free()
+	if is_instance_valid(shield):
+		shield.queue_free()
 	shield = null
 	
 func walk(dest: Vector2, flag : Node = null):
@@ -272,7 +278,13 @@ func _brick_throw(target, c):
 		miss()
 	yield(get_tree().create_timer(1), "timeout")
 	
-func use_sunblast():
+func use_sunblast(attackers: Array = []):
+	
+	if !attackers.empty():
+		var next = attackers.front()
+		attackers = attackers.slice(1, len(attackers))
+		next.use_sunblast(attackers)
+	
 	var b = load("res://Sunblast.tscn").instance()
 	b.source = self
 	world.add_child(b)
@@ -282,7 +294,14 @@ func use_sunblast():
 	b.get_node("Sprite").global_position.y = $Sprite/FireBeam.global_position.y
 	yield(b, "tree_exited")
 	
-func use_dung_bowl():
+func use_dung_bowl(attackers: Array = []):
+	
+	if !attackers.empty():
+		var next = attackers.front()
+		attackers = attackers.slice(1, len(attackers))
+		next.use_dung_bowl(attackers)
+	
+	
 	var disp = get_forward() * 768
 	
 	var t = Game.inc_tw(world, self, "global_position", -disp, 1.5)
@@ -301,6 +320,11 @@ func use_dung_bowl():
 	
 	ball.charge()
 	get_tree().create_timer(2.5).connect("timeout", ball, "roll")
+	
+	if attackers.empty():
+		for c in world.get_opposing_creatures():
+			c.allow_defend(ball)
+	
 	yield(get_tree().create_timer(5), "timeout")
 	
 func use_spear_thrust(target:Node2D):
@@ -318,6 +342,8 @@ func use_spear_thrust(target:Node2D):
 	ch.source = self
 	ch.target = target
 	ch.global_position = target.global_position
+	
+	target.allow_defend(ch)
 	
 	yield(ch, "tree_exiting")
 	

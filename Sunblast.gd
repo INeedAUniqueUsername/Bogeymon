@@ -1,4 +1,6 @@
 extends Node2D
+
+onready var groundArea = $Ground
 var source
 var damage_hp = 10
 var sweet = false
@@ -9,6 +11,8 @@ func _on_Damage_area_entered(area):
 			return
 		var c = area.creature
 		if c == source:
+			return
+		if c.place.side == source.place.side:
 			return
 		if area == c.groundArea:
 			return

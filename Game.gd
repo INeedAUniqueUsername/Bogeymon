@@ -62,3 +62,15 @@ func generateLevelTable():
 	return r
 
 var level = 0
+
+func evac(c):
+	var p = c.get_parent()
+	if p:
+		p.remove_child(c)
+func evacuate_creatures():
+	for c in player_team:
+		evac(c)
+	for c in opponent_team:
+		evac(c)
+
+var pvp = false

@@ -13,10 +13,14 @@ var bogeys = {
 	Bogeymon.Scarabold: preload("res://Scarabold.tscn").instance(),
 	Bogeymon.Crowscare: preload("res://Crowscare.tscn").instance()
 }
+
+func quit():
+	Game.evacuate_creatures()
+	get_tree().change_scene("res://Title.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	$Cancel.connect("pressed", get_tree(), "change_scene_to", [preload("res://Title.tscn")])
+	$Cancel.connect("pressed", self, "quit")
 	$StartGame.connect("pressed", self, "start_game")
 	$RandomBattle.connect("pressed", self, "random_battle")
 	
@@ -48,10 +52,7 @@ func _ready():
 		b.get_node("Button").connect("pressed", self, "remove_bogeymon", [i])
 		i += 1
 		
-	
-	if len(Game.player_team) > 0:
-		team = Game.player_team
-		update_team()
+	update_team()
 func show_bogeymon(bogey):
 	$Info/Name.text = bogey.species
 	$Info/Desc.text = DescTable[bogey.bogey]
@@ -61,18 +62,16 @@ func show_bogeymon(bogey):
 			continue
 		s += bogey.NameTable[m] + ", "
 	$Info/Moves.text = s
-	
-var team = []
 func add_bogeymon(bogey):
-	var i = len(team)
+	var i = len(Game.player_team)
 	if i == 6:
 		return
 	bogey = bogey.duplicate()
-	team.append(bogey)
+	Game.player_team.append(bogey)
 	update_team()
 	
 func remove_bogeymon(index):
-	team.remove(index)
+	Game.player_team.remove(index)
 	update_team()
 	
 func update_team():
@@ -82,33 +81,33 @@ func update_team():
 			b.remove_child(b.get_child(1))
 	
 	var i = 0
-	for c in team:
+	for c in Game.player_team:
 		c.show()
 		var b = ch[i]
 		b.add_child(c)
 		c.position = Vector2(b.rect_size.x/2, b.rect_size.y * 3/4.0)
 		i += 1
-	$StartGame.disabled = len(team) < 6
-	$RandomBattle.disabled = team.empty()
+	$StartGame.disabled = len(Game.player_team) < 6
+	$RandomBattle.disabled = Game.player_team.empty()
 func start_game():
-	if len(team) < 6:
+	if len(Game.player_team) < 6:
 		return
 		remove_and_skip()
+	Game.pvp = false
 	Game.campaign = true
 	Game.level = 0
-	for c in team:
-		c.get_parent().remove_child(c)
-	Game.player_team = team.duplicate()
+	Game.player_team = Game.player_team.duplicate()
+	Game.evacuate_creatures()
 	get_tree().change_scene("res://Battle.tscn")
 func random_battle():
 	
-	if team.empty():
+	if Game.player_team.empty():
 		return
+	Game.pvp = false
 	Game.campaign = false
-	for c in team:
-		c.get_parent().remove_child(c)
-	Game.player_team = team.duplicate()
+	Game.player_team = Game.player_team.duplicate()
 	Game.opponent_team = []
+	Game.evacuate_creatures()
 	randomize()
 	for i in range(6):
 		Game.opponent_team.append(bogeys[randi()%len(bogeys)].duplicate())

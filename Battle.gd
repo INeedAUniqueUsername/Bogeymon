@@ -39,7 +39,8 @@ func place_creature(c):
 	var box = StatBox.instance()
 	box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][Game.innovate(c.place.side)]
 	[$UI/Left, $UI/Right][c.place.side].add_child(box)
-	box.rect_scale = Vector2(0.75, 0.75)
+	#box.rect_scale = Vector2(0.75, 0.75)
+	box.modulate = Color.transparent
 	
 	box.nameLabel.text = c.species
 	box.hpRoller.set_amount(c.hp, 50.0)
@@ -49,6 +50,12 @@ func place_creature(c):
 	c.connect("damaged", self, "creature_damaged", [c, box])
 	box.hpRoller.connect("roller_stopped", self, "on_roller_stopped", [c, box])
 	
+	yield(get_tree(), "idle_frame")
+	var t = Game.tw_new(self)
+	var off = Vector2([1, -1][c.place.side], 0) * 512
+	t.interpolate_property(box, "rect_position", box.rect_position - off, box.rect_position, 0.5, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	yield(get_tree(), "idle_frame")
+	box.modulate = Color.white
 onready var trainers = [$Player, $Opponent]
 func _ready():
 	
@@ -268,9 +275,15 @@ func creature_damaged(proj, c, box):
 	box.shake()
 	if !proj.is_in_group("Impact"):
 		return
-	for i in [16, -16, 16, -16, 8, -8, 8, -8, 4, -4, 4, -4, 2, -2, 2, -2, 1, -1, 1, -1, 0]:
-		$Camera2D.position = Vector2(0, i * 2)
-		yield(get_tree().create_timer(0.04), "timeout")
+		
+	if proj.is_in_group("Horizontal"):
+		for i in [16, -16, 16, -16, 8, -8, 8, -8, 4, -4, 4, -4, 2, -2, 2, -2, 1, -1, 1, -1, 0]:
+			$Camera2D.position = Vector2(i * 2, 0)
+			yield(get_tree().create_timer(0.04), "timeout")
+	else:
+		for i in [16, -16, 16, -16, 8, -8, 8, -8, 4, -4, 4, -4, 2, -2, 2, -2, 1, -1, 1, -1, 0]:
+			$Camera2D.position = Vector2(0, i * 2)
+			yield(get_tree().create_timer(0.04), "timeout")
 signal creature_done()
 func creature_pass():
 	creature.allowStrike = true
@@ -351,7 +364,7 @@ func update_move_list():
 		var m = creature.moves[i]
 		if m != creature.Moves.None:
 			button.get_node("Label").text = creature.NameTable[m]
-			button.disabled = !(creature.pp[m] > 0) or (strikeMode and (!creature.StrikeMoves.has(m) or get_allies_for_strike(m).empty()))
+			button.disabled = !(creature.pp[m] > 0) or (strikeMode and (!creature.PartyMoves.has(m) or get_allies_for_strike(m).empty()))
 			continue
 		
 		button.get_node("Label").text = ""
@@ -498,6 +511,12 @@ func handle_move(i):
 					
 				yield(showMessage(msg), "completed")
 				yield(creature.use_brick_throw(target, attackers), "completed")
+			Moves.DungBowl:
+				yield(showMessage(msg), "completed")
+				yield(creature.use_dung_bowl(attackers), "completed")
+			Moves.Sunblast:
+				yield(showMessage(msg), "completed")
+				yield(creature.use_sunblast(attackers), "completed")
 				
 			_:
 				assert(false)

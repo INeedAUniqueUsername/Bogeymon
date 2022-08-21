@@ -1,5 +1,7 @@
 extends Node2D
 
+onready var groundArea = $Ground
+
 var charging = false
 var rolling = false
 
@@ -8,9 +10,11 @@ onready var speed = 12
 var direction
 var prevEnter = false
 func _process(delta):
-	$Sprite.rotate(speed * delta)
+	$Sprite.rotate(speed * delta * sign(direction.x))
 	
 	if charging:
+		
+		$Line2D.set_point_position(1, 1024 * direction)
 		if source.cpu:
 			if randi()%16 == 0:
 				speed += 2
@@ -25,8 +29,6 @@ func _process(delta):
 			rotate_towards(delta, Vector2(0, 1))
 			
 		prevEnter = enter
-	
-		$Line2D.set_point_position(1, direction * 1024)
 	elif rolling:
 		global_position += direction * abs($Sprite.position.y) * speed * delta
 
@@ -62,11 +64,8 @@ func _on_area_entered(area : Area2D):
 		var c = area.creature
 		if c == source:
 			return
-		
-		var n = c.name
-		if n == "Crowscare":
-			pass
-		var aa = area.name
+		if c.place.side == source.place.side:
+			return
 		if !$Ground.overlaps_area(c.groundArea):
 			return
 		if hitCreatures.has(c):

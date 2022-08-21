@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Shadow.png" type="Texture" id=1]
 [ext_resource path="res://DungBall.png" type="Texture" id=2]
 [ext_resource path="res://Dungball.gd" type="Script" id=3]
+[ext_resource path="res://ProjectileArea.gd" type="Script" id=4]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 36, 18 )
@@ -10,7 +11,7 @@ extents = Vector2( 36, 18 )
 [sub_resource type="CircleShape2D" id=1]
 radius = 32.0
 
-[node name="Dungball" type="Node2D" groups=["Impact"]]
+[node name="Dungball" type="Node2D" groups=["Horizontal", "Impact"]]
 script = ExtResource( 3 )
 
 [node name="Ground" type="Area2D" parent="."]
@@ -37,6 +38,8 @@ default_color = Color( 1, 0, 0, 0.501961 )
 
 [node name="Area" type="Area2D" parent="."]
 position = Vector2( 0, -32 )
+script = ExtResource( 4 )
+projectile = NodePath("..")
 
 [node name="Shape" type="CollisionShape2D" parent="Area"]
 shape = SubResource( 1 )
