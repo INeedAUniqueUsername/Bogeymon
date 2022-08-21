@@ -9,8 +9,11 @@ func _on_Area_area_entered(area):
 		if hit:
 			return
 		var c = area.creature
-		if c == source:
+		if c.place.side == source.place.side:
 			return
+		if c.fainted:
+			return
+			
 		if !$Ground.overlaps_area(c.groundArea):
 			return
 		hit = true

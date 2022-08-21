@@ -20,7 +20,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.501961 ) ]
 }
 tracks/1/type = "method"
 tracks/1/path = NodePath(".")
@@ -83,10 +83,10 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 1.7, 2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.3, 1.7, 2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+"values": [ Color( 1, 1, 1, 0.501961 ), Color( 1, 0, 0, 1 ), Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath(".:attackReady")
@@ -203,7 +203,7 @@ tracks/5/keys = {
 }
 
 [sub_resource type="CircleShape2D" id=4]
-radius = 6.0
+radius = 8.0
 
 [node name="StabCrosshair" type="Node2D"]
 script = ExtResource( 3 )
@@ -236,3 +236,5 @@ texture = ExtResource( 1 )
 
 [node name="Shape" type="CollisionShape2D" parent="OuterPivot/InnerPivot/Aim/Area"]
 shape = SubResource( 4 )
+
+[connection signal="area_entered" from="OuterPivot/InnerPivot/Aim/Area" to="." method="_on_area_entered"]

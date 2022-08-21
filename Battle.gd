@@ -3,7 +3,64 @@ var creatures = []
 const Place = preload("res://Common.gd").Place
 
 onready var boxes = [$UI/LeftA, $UI/LeftB, $UI/RightA, $UI/RightB]
+
+
+func place_teams(player_team, opponent_team):
+	for i in range(6):
+		if i < len(player_team):
+			var c = Game.player_team[i]
+			var location = $Left.get_child(i)
+			location.add_child(c)
+			c.place = Place.new(0, i, location)
+		
+		if i < len(opponent_team):
+			var c = opponent_team[i]
+			var location = $Right.get_child(i)
+			location.add_child(c)
+			c.place = Place.new(1, i, location)
+func evacuate_creatures():
+	for c in creatures:
+		c.get_parent().remove_child(c)
+func restart():
+	evacuate_creatures()
+	get_tree().change_scene("res://Battle.tscn")
+func quit():
+	evacuate_creatures()
+	get_tree().change_scene("res://PartyBuilder.tscn")
+	
+	
+func place_creature(c):
+	c.summon()
+	yield(get_tree(), "idle_frame")
+	c.show()
+	
+	c.cpu = c.place.side == 1
+	
+	var box = StatBox.instance()
+	box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][Game.innovate(c.place.side)]
+	[$UI/Left, $UI/Right][c.place.side].add_child(box)
+	box.rect_scale = Vector2(0.75, 0.75)
+	
+	box.nameLabel.text = c.species
+	box.hpRoller.set_amount(c.hp, 50.0)
+	
+	
+	c.connect("hp_changed", self, "creature_hp_changed", [c, box])
+	c.connect("damaged", self, "creature_damaged", [c, box])
+	box.hpRoller.connect("roller_stopped", self, "on_roller_stopped", [c, box])
+	
 func _ready():
+	randomize()
+	
+	$UI/Pause/Restart.connect("pressed", self, "restart")
+	$UI/Pause/Quit.connect("pressed", self, "quit")
+	
+	if Game.campaign:
+		
+		var levelTable = Game.levelTable
+		place_teams(Game.player_team, levelTable[Game.level])
+	else:
+		place_teams(Game.player_team, Game.opponent_team)
 	for holder in get_tree().get_nodes_in_group("Place"):
 		if holder.get_child_count() == 0:
 			continue
@@ -32,44 +89,119 @@ func _ready():
 	update_strike_label()
 	
 	for c in creatures:
-		c.summon()
+		c.restore()
+		c.hide()
 		
-		var box = StatBox.instance()
-		box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][Game.innovate(c.place.side)]
-		[$UI/Left, $UI/Right][c.place.side].add_child(box)
-		box.rect_scale = Vector2(0.75, 0.75)
+	update_menu()
+	
+	$UI/Anim.play("Start")
+	yield($UI/Anim, "animation_finished")
+	
+	yield(get_tree().create_timer(1), "timeout")
+	
+	var creature_count = len(creatures)
+	for i in range(6):
+		if i < creature_count:
+			place_creature(creatures[i])
+		if i + 6 < creature_count:
+			place_creature(creatures[i + 6])
+		yield(get_tree().create_timer(0.5), "timeout")
 		
-		box.nameLabel.text = c.species
-		box.hpRoller.set_amount(c.hp, 50.0)
+	yield(get_tree().create_timer(2), "timeout")
 		
+	$UI/Anim.play("Start2")
+	yield($UI/Anim, "animation_finished")
 		
-		c.connect("hp_changed", self, "creature_hp_changed", [c, box])
-		c.connect("damaged", self, "creature_damaged", [c, box])
-		box.hpRoller.connect("roller_stopped", self, "on_roller_stopped", [c, box])
-		
-		
-	while true:
+	while playing:
 		for c in creatures:
 			c.allowStrike = true
 		for c in creatures:
+			if !playing:
+				break
 			if !c:
 				continue
 			if c.fainted:
 				continue
-			if c.cpu:
-				continue
 			if !c.allowStrike:
 				continue
 			creature = c
-			
 			update_menu()
+			if c.cpu:
+				var moves = c.moves.duplicate()
+				moves.shuffle()
+				var Moves = c.Moves
+				for m in moves:
+					if m == Moves.None:
+						continue
+					var msg = "%s used %s!" % [creature.species, creature.NameTable[m].to_upper()]
+					match m:
+						Moves.SnapFreeze:
+							yield(showMessage(msg), "completed")
+							yield(c.use_snap_freeze(get_cpu_target()), "completed")
+						Moves.BrickThrow:
+							yield(showMessage(msg), "completed")
+							yield(c.use_brick_throw(get_cpu_target()), "completed")
+						Moves.Sunblast:
+							
+							yield(showMessage(msg), "completed")
+							yield(c.use_sunblast(), "completed")
+						Moves.DungBowl:
+							
+							yield(showMessage(msg), "completed")
+							yield(c.use_dung_bowl(), "completed")
+						Moves.SpearThrust:
+							
+							yield(showMessage(msg), "completed")
+							yield(c.use_spear_thrust(get_cpu_target()), "completed")
+						Moves.CrowSlash:
+							
+							yield(showMessage(msg), "completed")
+							yield(c.use_crow_slash(get_cpu_target()), "completed")
+						_:
+							continue
+					hideMessage()
+					break
+				continue
+			update_strike_label()
 			
 			var arrow = load("res://SubjectArrow.tscn").instance()
 			arrow.global_position = creature.global_position
+			arrow.follow = c
 			add_child(arrow)
 			yield(self, "creature_done")
 			arrow.queue_free()
+	yield($UI/Center/EndBattle, "pressed")
+	evacuate_creatures()
+	if playerWin:
+		if Game.campaign:
+			Game.level += 1
+			if Game.level == Game.levelCount:
+				get_tree().change_scene("aaaaaaaaaa")
+			else:
+				get_tree().change_scene("res://Battle.tscn")
+		else:
+			get_tree().change_scene("res://PartyBuilder.tscn")
+	else:
+		# this doesn't happen bc we don't show the button
+		get_tree().change_scene("res://PartyBuilder.tscn")
+				
+var playing = true
 			
+func get_cpu_target_all():
+	var result = []
+	for c in creatures:
+		if c.place.side == creature.place.side:
+			continue
+		if c.fainted:
+			continue
+		result.append(c)
+	return result
+func get_cpu_target():
+	var r = get_cpu_target_all()
+	if len(r) == 0:
+		return null
+	r.shuffle()
+	return r.front()
 func drag_menu():
 	var bar = $UI/CreatureMenu/TopBar
 	var menu = $UI/CreatureMenu
@@ -93,12 +225,29 @@ func update_strike_label():
 const StatBox = preload("res://InfoBox.tscn")
 func creature_hp_changed(c, box):
 	box.hpRoller.set_amount(c.hp, c.hurt_rate)
+	
+var playerWin = false
 func on_roller_stopped(c, box):
 	c.hurt_rate = 10
 	if !box.hpRoller.amount == 0:
 		return
 	c.faint()
 	box.statusLabel.text = "Knocked out!"
+	
+	var activeSides = [false, false]
+	for c in creatures:
+		if !c.fainted:
+			activeSides[c.place.side] = true
+	
+	if !activeSides[1]:
+		playing = false
+		playerWin = true
+		$UI/Anim.play("Win")
+	elif !activeSides[0]:
+		playing = false
+		playerWin = false
+		$UI/Anim.play("Lose")
+	
 	if c == creature:
 		emit_signal("creature_done")
 func creature_damaged(proj, c, box):
@@ -121,8 +270,62 @@ func show_move_list():
 var creature = null
 func update_menu():
 	var cm = $UI/CreatureMenu
+	if !creature or creature.cpu:
+		cm.hide()
+		return
+	var ver = Game.innovate(creature.place.side)
+	
+	$UI/CreatureMenu/TopBar.texture_normal = [
+		preload("res://TopBarCyan.png"),
+		preload("res://TopBarPink.png")
+	][ver]
+	$UI/CreatureMenu/MoveList/Description.texture = [
+		preload("res://MoveDescBoxCyan.png"),
+		preload("res://MoveDescBoxPink.png")
+	][ver]
+	for lb in [$UI/SelectTarget, $UI/SelectTargetMulti,
+			$UI/CreatureMenu/MoveList/Move0, $UI/CreatureMenu/MoveList/Move1,
+			$UI/CreatureMenu/MoveList/Move2, $UI/CreatureMenu/MoveList/Move3,
+			$UI/CreatureMenu/MoveList/PartyStrike,
+			$UI/SelectTarget/Cancel, $UI/SelectTargetMulti/Cancel]:
+		lb = lb as TextureButton
+		lb.texture_normal = [
+			preload("res://LongButtonNormalCyan.png"),
+			preload("res://LongButtonNormalPink.png")
+		][ver]
+		lb.texture_disabled = [
+			preload("res://LongButtonDisabledCyan.png"),
+			preload("res://LongButtonDisabledPink.png")
+		][ver]
+	for nb in [$UI/CreatureMenu/Attack, $UI/CreatureMenu/Pass]:
+		nb = nb as TextureButton
+		nb.texture_normal = [
+			preload("res://ButtonNormalCyan.png"),
+			preload("res://ButtonNormalPink.png")
+		][ver]
+		nb.texture_disabled = [
+			preload("res://LongButtonDisabledCyan.png"),
+			preload("res://LongButtonDisabledPink.png")
+		][ver]
+	for sb in [$UI/SelectTarget/Prev, $UI/SelectTarget/Next,
+			$UI/SelectTargetMulti/Prev, $UI/SelectTargetMulti/Next]:
+		sb = sb as TextureButton
+		sb.texture_normal = [
+			preload("res://SmallButtonCyan.png"),
+			preload("res://SmallButtonPink.png")
+		][ver]
+		sb.texture_disabled = [
+			preload("res://SmallButtonDisabledCyan.png"),
+			preload("res://SmallButtonDisabledPink.png")
+		][ver]
+	$UI/Dialog.texture = [
+		preload("res://TextBoxCyan.png"), preload("res://TextBoxPink.png")
+	][ver]
+	
 	cm.show()
-	cm.set_global_position(creature.global_position)
+	cm.set_global_position(creature.place.location.global_position)
+	
+	
 	$UI/CreatureMenu/MoveList.hide()
 	update_move_list()
 	
@@ -215,6 +418,8 @@ func get_allies_for_strike(move):
 	for a in get_allied_creatures():
 		if !a.allowStrike:
 			continue
+		if a.fainted:
+			continue
 		if !(a.moves.has(move) and a.pp[move] > 0):
 			continue
 		r.append(a)
@@ -306,11 +511,18 @@ func handle_move(i):
 			yield(creature.use_brick_throw(target), "completed")
 		Moves.Sunblast:
 			yield(showMessage(msg), "completed")
-			yield(creature.sunblast(), "completed")
+			yield(creature.use_sunblast(), "completed")
 		Moves.DungBowl:
-			yield(showMessage(msg), "completed")
-			yield(creature.dung_bowl(), "completed")
 			
+			var f = Node.new()
+			add_child(f)
+			for c in get_opposing_creatures():
+				c.allow_defend(f)
+			
+			yield(showMessage(msg), "completed")
+			yield(creature.use_dung_bowl(), "completed")
+			
+			f.queue_free()
 		Moves.SpearThrust:
 			var target = yield(request_target(get_opposing_creatures(), true), "completed")
 			if !target:
@@ -327,6 +539,9 @@ func handle_move(i):
 			yield(creature.use_crow_slash(target), "completed")
 		_:
 			assert(false)
+			
+	
+	creature.allowStrike = false
 	hideMessage()
 	
 	return true
@@ -348,6 +563,14 @@ func showMessage(text):
 	t.start()
 	yield(t, "tween_all_completed")
 func hideMessage():
+	dialogVisible = false
 	$UI/Dialog/Anim.play("Hide")
 	yield($UI/Dialog/Anim, "animation_finished")
-	dialogVisible = false
+	
+var prevEsc = false
+func _process(delta):
+	var esc = Input.is_key_pressed(KEY_ESCAPE)
+	#if !esc and prevEsc:
+	#	$UI/Pause.visible = !$UI/Pause.visible
+	prevEsc = esc
+	

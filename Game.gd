@@ -1,7 +1,11 @@
 extends Node
-var innovation = 0
-func innovate(index):
+var innovation = null
+func innovate(index = 0):
+	if innovation == null:
+		innovation = 0
 	return (index + innovation) % 2
+func get_version_name():
+	return ["Bold", "Brash"][innovation]
 func tw_new(world: Node2D) -> Tween:
 	var t := Tween.new()
 	world.add_child(t)
@@ -26,3 +30,35 @@ func inc_tw(world: Node2D, subject: Node2D, prop: String, inc, dur: float, trans
 
 func vector_to(start: Node2D, end: Node2D):
 	return end.global_position - start.global_position
+
+
+var campaign = true
+var player_team : Array = []
+
+var opponent_team : Array = [
+	preload("res://Stoneborn.tscn").instance(),
+	preload("res://Stoneborn.tscn").instance(),
+	preload("res://Stoneborn.tscn").instance(),
+	preload("res://Stoneborn.tscn").instance(),
+	preload("res://Stoneborn.tscn").instance(),
+	preload("res://Stoneborn.tscn").instance(),
+]
+
+var levelTable = generateLevelTable()
+var levelCount
+func generateLevelTable():
+	var stoneborn = preload("res://Stoneborn.tscn")
+	var scarabold = preload("res://Scarabold.tscn")
+	var crowscare = preload("res://Crowscare.tscn")
+	var r = [
+		[stoneborn.instance(), stoneborn.instance(), stoneborn.instance()],
+		[stoneborn.instance(), scarabold.instance(), stoneborn.instance()],
+		[stoneborn.instance(), scarabold.instance(), scarabold.instance(), stoneborn.instance()],
+		[scarabold.instance(), crowscare.instance(), scarabold.instance(), stoneborn.instance(), stoneborn.instance()],
+		[stoneborn.instance(), crowscare.instance(), crowscare.instance(), scarabold.instance(), stoneborn.instance(), scarabold.instance()],
+		[crowscare.instance(), crowscare.instance(), stoneborn.instance(), scarabold.instance(), stoneborn.instance(), scarabold.instance()]
+	]
+	levelCount = len(r)
+	return r
+
+var level = 0

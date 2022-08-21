@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://BogeymonBoldVersion.png" type="Texture" id=1]
 [ext_resource path="res://IBMPlexMono-Regular.ttf" type="DynamicFontData" id=2]
@@ -8,6 +8,10 @@
 [ext_resource path="res://Title.gd" type="Script" id=6]
 [ext_resource path="res://BogeymonBrashVersionBackground.png" type="Texture" id=7]
 [ext_resource path="res://BogeymonBrashVersion.png" type="Texture" id=8]
+[ext_resource path="res://BigButtonHover.png" type="Texture" id=9]
+[ext_resource path="res://BigButtonNormalCyan.png" type="Texture" id=10]
+[ext_resource path="res://BigButtonPressed.png" type="Texture" id=11]
+[ext_resource path="res://BigButtonPink.png" type="Texture" id=12]
 
 [sub_resource type="Animation" id=4]
 length = 0.001
@@ -34,18 +38,6 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ true ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath("../Buttons:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ false ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -75,20 +67,8 @@ tracks/1/keys = {
 "update": 1,
 "values": [ false ]
 }
-tracks/2/type = "value"
-tracks/2/path = NodePath("../Buttons:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0, 2.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ false, true ]
-}
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=6]
 size = 72
 font_data = ExtResource( 2 )
 
@@ -136,13 +116,23 @@ texture = ExtResource( 8 )
 
 [node name="Buttons" type="Node2D" parent="."]
 
-[node name="Play" type="Button" parent="Buttons"]
-margin_left = -160.0
-margin_top = 400.0
-margin_right = 160.0
-margin_bottom = 500.0
-custom_fonts/font = SubResource( 1 )
+[node name="Play" type="TextureButton" parent="Buttons"]
+margin_left = -320.0
+margin_top = 384.0
+margin_right = 320.0
+margin_bottom = 512.0
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 11 )
+texture_hover = ExtResource( 9 )
+
+[node name="Label" type="Label" parent="Buttons/Play"]
+margin_right = 640.0
+margin_bottom = 128.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 6 )
 text = "Play"
+align = 1
+valign = 1
 
 [node name="Select" type="Node2D" parent="."]
 
@@ -170,21 +160,41 @@ align = 1
 [node name="Prompt" type="Node2D" parent="."]
 position = Vector2( 0, 96 )
 
-[node name="Bold" type="Button" parent="Prompt"]
+[node name="Bold" type="TextureButton" parent="Prompt"]
 margin_left = -720.0
 margin_top = 192.0
 margin_right = -80.0
 margin_bottom = 320.0
-custom_fonts/font = SubResource( 1 )
-text = "BOLD Version"
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 11 )
+texture_hover = ExtResource( 9 )
 
-[node name="Brash" type="Button" parent="Prompt"]
+[node name="Label" type="Label" parent="Prompt/Bold"]
+margin_right = 640.0
+margin_bottom = 128.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 6 )
+text = "BOLD Version"
+align = 1
+valign = 1
+
+[node name="Brash" type="TextureButton" parent="Prompt"]
 margin_left = 80.0
 margin_top = 192.0
 margin_right = 720.0
 margin_bottom = 320.0
-custom_fonts/font = SubResource( 1 )
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+texture_hover = ExtResource( 9 )
+
+[node name="Label" type="Label" parent="Prompt/Brash"]
+margin_right = 640.0
+margin_bottom = 128.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 6 )
 text = "BRASH Version"
+align = 1
+valign = 1
 
 [node name="Select" type="Label" parent="Prompt"]
 margin_left = -800.0

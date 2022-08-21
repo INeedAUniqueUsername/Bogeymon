@@ -11,6 +11,10 @@ func _process(delta):
 	$Sprite.rotate(speed * delta)
 	
 	if charging:
+		if source.cpu:
+			if randi()%16 == 0:
+				speed += 2
+			return
 		var enter = Input.is_key_pressed(KEY_ENTER)
 		if enter and !prevEnter:
 			speed += 2
@@ -21,6 +25,7 @@ func _process(delta):
 			rotate_towards(delta, Vector2(0, 1))
 			
 		prevEnter = enter
+	
 		$Line2D.set_point_position(1, direction * 1024)
 	elif rolling:
 		global_position += direction * abs($Sprite.position.y) * speed * delta
@@ -47,6 +52,9 @@ var source
 var hit = false
 var hitCreatures = []
 func _on_area_entered(area : Area2D):
+	
+	if !rolling:
+		return
 	#NOTE: Ground must make contact before body, otherwise hit doesn't register
 	#workaround: ground area must be wider than body
 	if 'creature' in area:

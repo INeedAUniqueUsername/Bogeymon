@@ -28,42 +28,39 @@ var target = null
 func _ready():
 	set_index(0)
 
-var busy = false
-
-var prevKey = {
+var prevKey = {}
+var currKey = {
 	KEY_ENTER: false,
 	KEY_ESCAPE: false,
-	KEY_SHIFT: false
+	KEY_SHIFT: false,
+	KEY_UP: false,
+	KEY_LEFT: false,
+	KEY_DOWN: false,
+	KEY_RIGHT: false
 }
+func update_key():
+	for k in currKey:
+		prevKey[k] = currKey[k]
+		currKey[k] = Input.is_key_pressed(k)
+func is_released(k):
+	return !currKey[k] and prevKey[k]
 func _process(delta):
-	var enter = Input.is_key_pressed(KEY_ENTER)
-	var esc = Input.is_key_pressed(KEY_ESCAPE)
-	var shift = Input.is_key_pressed(KEY_SHIFT)
-	if !enter and prevKey[KEY_ENTER]:
+	update_key()
+	
+	if is_released(KEY_ENTER):
 		select()
-	elif Input.is_key_pressed(KEY_DOWN) and !busy:
+	elif is_released(KEY_DOWN) or is_released(KEY_RIGHT):
 		next()
-	elif Input.is_key_pressed(KEY_UP) and !busy:
+	elif is_released(KEY_UP) or is_released(KEY_LEFT):
 		prev()
-	elif !esc and prevKey[KEY_ESCAPE] and allowCancel:
+	elif is_released(KEY_ESCAPE) and allowCancel:
 		queue_free()
-	elif !shift and prevKey[KEY_SHIFT] and allowCancel:
+	elif is_released(KEY_SHIFT) and allowCancel:
 		queue_free()
-	prevKey = {
-		KEY_ENTER: enter,
-		KEY_ESCAPE: esc,
-		KEY_SHIFT: shift
-	}
 func next():
 	set_index(index + 1)
-	cooldown()
 func prev():
 	set_index(index - 1)
-	cooldown()
 func select():
 	target = creatures[index]
 	queue_free()
-func cooldown():
-	busy = true
-	yield(get_tree().create_timer(0.5), "timeout")
-	busy = false

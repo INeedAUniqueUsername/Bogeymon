@@ -8,6 +8,7 @@ var damage_hp = 20
 var hit = false
 
 var hitCreatures = []
+
 signal detonated(explosion)
 func detonate():
 	var e = load("res://IceBeamExplosion.tscn").instance()
@@ -18,6 +19,8 @@ func detonate():
 		if !('creature' in a):
 			continue
 		var c = a.creature
+		if c == source:
+			continue
 		if hitCreatures.has(c):
 			continue
 		hitCreatures.append(c)
@@ -43,3 +46,8 @@ func nop(delta):
 		position.y -= d * delta
 	if Input.is_key_pressed(KEY_DOWN):
 		position.y += d * delta
+
+
+func _on_area_entered(area):
+	if source.cpu and 'creature' in area and area.creature.place.side != source.place.side:
+		get_tree().create_timer(rand_range(0.2, 0.5)).connect("timeout", self, "detonate")

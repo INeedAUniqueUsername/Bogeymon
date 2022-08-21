@@ -244,6 +244,7 @@ tracks/1/keys = {
 
 [node name="Crowscare" type="Node2D"]
 script = ExtResource( 1 )
+bogey = 2
 species = "Crowscare"
 moves = [ 6, 0, 0, 0 ]
 hp_max = 50

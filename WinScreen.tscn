@@ -1,0 +1,366 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Stoneborn.png" type="Texture" id=1]
+[ext_resource path="res://PartyBuilder.gd" type="Script" id=2]
+[ext_resource path="res://IBMPlexMono-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://TopBarCyan.png" type="Texture" id=4]
+[ext_resource path="res://Crowscare.png" type="Texture" id=5]
+[ext_resource path="res://Scarabold.png" type="Texture" id=6]
+[ext_resource path="res://Monospace.tres" type="Theme" id=7]
+[ext_resource path="res://Button.png" type="Texture" id=8]
+[ext_resource path="res://ButtonHover.png" type="Texture" id=9]
+[ext_resource path="res://ButtonPressed.png" type="Texture" id=10]
+[ext_resource path="res://ButtonDisabled.png" type="Texture" id=11]
+[ext_resource path="res://LongButtonPressed.png" type="Texture" id=12]
+[ext_resource path="res://LongButtonNormal.png" type="Texture" id=13]
+[ext_resource path="res://LongButtonHover.png" type="Texture" id=14]
+[ext_resource path="res://LongButtonDisabled.png" type="Texture" id=15]
+
+[sub_resource type="DynamicFont" id=1]
+size = 64
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+font_data = ExtResource( 3 )
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="Back" type="NinePatchRect" parent="."]
+margin_right = 1920.0
+margin_bottom = 1080.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Title" type="Label" parent="."]
+margin_top = 32.0
+margin_right = 1920.0
+margin_bottom = 128.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Select Bogeymon"
+align = 1
+valign = 1
+
+[node name="Title2" type="Label" parent="."]
+margin_top = 152.0
+margin_right = 672.0
+margin_bottom = 248.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Your Party"
+align = 1
+valign = 1
+
+[node name="Info" type="NinePatchRect" parent="."]
+margin_left = 640.0
+margin_top = 512.0
+margin_right = 1664.0
+margin_bottom = 1024.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Name" type="Label" parent="Info"]
+margin_left = 32.0
+margin_top = 16.0
+margin_right = 832.0
+margin_bottom = 112.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Name"
+
+[node name="Desc" type="Label" parent="Info"]
+margin_left = 32.0
+margin_top = 112.0
+margin_right = 992.0
+margin_bottom = 368.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "Description"
+autowrap = true
+
+[node name="Moves" type="Label" parent="Info"]
+margin_left = 32.0
+margin_top = 448.0
+margin_right = 992.0
+margin_bottom = 496.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "Moves:"
+autowrap = true
+
+[node name="Team" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="A" type="NinePatchRect" parent="Team"]
+margin_left = 64.0
+margin_top = 256.0
+margin_right = 320.0
+margin_bottom = 512.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Team/A"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="B" type="NinePatchRect" parent="Team"]
+margin_left = 320.0
+margin_top = 256.0
+margin_right = 576.0
+margin_bottom = 512.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Team/B"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="C" type="NinePatchRect" parent="Team"]
+margin_left = 64.0
+margin_top = 512.0
+margin_right = 320.0
+margin_bottom = 768.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Team/C"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="D" type="NinePatchRect" parent="Team"]
+margin_left = 320.0
+margin_top = 512.0
+margin_right = 576.0
+margin_bottom = 768.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Team/D"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="E" type="NinePatchRect" parent="Team"]
+margin_left = 64.0
+margin_top = 768.0
+margin_right = 320.0
+margin_bottom = 1024.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Team/E"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="F" type="NinePatchRect" parent="Team"]
+margin_left = 320.0
+margin_top = 768.0
+margin_right = 576.0
+margin_bottom = 1024.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Team/F"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="Pool" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Stoneborn" type="NinePatchRect" parent="Pool"]
+margin_left = 640.0
+margin_top = 256.0
+margin_right = 896.0
+margin_bottom = 512.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Pool/Stoneborn"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="Sprite" type="Sprite" parent="Pool/Stoneborn"]
+texture = ExtResource( 1 )
+centered = false
+offset = Vector2( 0, 32 )
+hframes = 6
+
+[node name="Scarabold" type="NinePatchRect" parent="Pool"]
+margin_left = 896.0
+margin_top = 256.0
+margin_right = 1152.0
+margin_bottom = 512.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Pool/Scarabold"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="Sprite" type="Sprite" parent="Pool/Scarabold"]
+texture = ExtResource( 6 )
+centered = false
+offset = Vector2( 0, 32 )
+hframes = 6
+
+[node name="Crowscare" type="NinePatchRect" parent="Pool"]
+margin_left = 1152.0
+margin_top = 256.0
+margin_right = 1408.0
+margin_bottom = 512.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Pool/Crowscare"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="Sprite" type="Sprite" parent="Pool/Crowscare"]
+texture = ExtResource( 5 )
+offset = Vector2( 256, 128 )
+hframes = 11
+
+[node name="D" type="NinePatchRect" parent="Pool"]
+margin_left = 1408.0
+margin_top = 256.0
+margin_right = 1664.0
+margin_bottom = 512.0
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 48, 48 )
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Button" type="Button" parent="Pool/D"]
+margin_right = 256.0
+margin_bottom = 256.0
+flat = true
+
+[node name="Sprite" type="Sprite" parent="Pool/D"]
+visible = false
+position = Vector2( 128, 128 )
+texture = ExtResource( 1 )
+hframes = 6
+
+[node name="Cancel" type="TextureButton" parent="." groups=["Button"]]
+margin_left = 64.0
+margin_top = 64.0
+margin_right = 192.0
+margin_bottom = 112.0
+theme = ExtResource( 7 )
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 10 )
+texture_hover = ExtResource( 9 )
+
+[node name="Label" type="Label" parent="Cancel"]
+margin_right = 128.0
+margin_bottom = 48.0
+theme = ExtResource( 7 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Cancel"
+align = 1
+valign = 1
+
+[node name="RandomBattle" type="TextureButton" parent="." groups=["Button"]]
+margin_left = 1600.0
+margin_top = 64.0
+margin_right = 1856.0
+margin_bottom = 112.0
+theme = ExtResource( 7 )
+disabled = true
+texture_normal = ExtResource( 13 )
+texture_pressed = ExtResource( 12 )
+texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 15 )
+
+[node name="Label" type="Label" parent="RandomBattle"]
+margin_right = 256.0
+margin_bottom = 48.0
+theme = ExtResource( 7 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Random Battle"
+align = 1
+valign = 1
+
+[node name="StartGame" type="TextureButton" parent="." groups=["Button"]]
+margin_left = 1720.0
+margin_top = 968.0
+margin_right = 1848.0
+margin_bottom = 1016.0
+theme = ExtResource( 7 )
+disabled = true
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 10 )
+texture_hover = ExtResource( 9 )
+texture_disabled = ExtResource( 11 )
+
+[node name="Label" type="Label" parent="StartGame"]
+margin_right = 128.0
+margin_bottom = 48.0
+theme = ExtResource( 7 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Start"
+align = 1
+valign = 1
