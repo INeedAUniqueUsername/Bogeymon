@@ -34,7 +34,7 @@ func place_creature(c):
 	yield(get_tree(), "idle_frame")
 	c.show()
 	
-	c.cpu = c.place.side == 1
+	c.cpu = !Game.pvp and c.place.side == 1
 	
 	var box = StatBox.instance()
 	box.texture = [load("res://InfoBoxCyan.png"), load("res://InfoBoxRed.png")][Game.innovate(c.place.side)]

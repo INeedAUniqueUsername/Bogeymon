@@ -4,6 +4,8 @@ func innovate(index = 0):
 	if innovation == null:
 		innovation = 0
 	return (index + innovation) % 2
+func toggle_innovation():
+	innovation = innovate(1)
 func get_version_name():
 	return ["Bold", "Brash"][innovation]
 func tw_new(world: Node2D) -> Tween:
@@ -35,14 +37,7 @@ func vector_to(start: Node2D, end: Node2D):
 var campaign = true
 var player_team : Array = []
 
-var opponent_team : Array = [
-	preload("res://Stoneborn.tscn").instance(),
-	preload("res://Stoneborn.tscn").instance(),
-	preload("res://Stoneborn.tscn").instance(),
-	preload("res://Stoneborn.tscn").instance(),
-	preload("res://Stoneborn.tscn").instance(),
-	preload("res://Stoneborn.tscn").instance(),
-]
+var opponent_team : Array = []
 
 var levelTable = generateLevelTable()
 var levelCount
