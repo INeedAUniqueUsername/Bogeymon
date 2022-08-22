@@ -109,9 +109,13 @@ func _ready():
 		
 	update_menu()
 	
+	var battleTime = $UI/Center/BattleTime
+	if Game.campaign:
+		battleTime.text = "Level " + str(Game.level + 1)
+		battleTime.percent_visible = 1
+		yield(get_tree().create_timer(1), "timeout")
 	$UI/Anim.play("Start")
 	yield($UI/Anim, "animation_finished")
-	
 	yield(get_tree().create_timer(1), "timeout")
 	
 	var creature_count = len(creatures)
