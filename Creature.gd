@@ -18,26 +18,29 @@ enum Moves {
 	SpearThrust,
 	CrowSlash,
 	Lunge,
+	BattleCry,
 	Feather
 }
 var NameTable = {
 	Moves.SnapFreeze: "Snap Freeze",
 	Moves.BrickThrow: "Brick Throw",
 	Moves.Sunblast: "Glare",
-	Moves.DungBowl: "Dung Bowl",
+	Moves.DungBowl: "Dung Beetle",
 	Moves.SpearThrust: "Spear Thrust",
-	Moves.CrowSlash: "Crow Slash",
+	Moves.CrowSlash: "Bird Strikes",
 	Moves.Lunge: "Lunge",
+	Moves.BattleCry: "Battle Cry",
 	Moves.Feather: "Feather"
 }
 var DescTable = {
 	Moves.SnapFreeze: "Casts a freezing orb at the target. Press Enter to detonate the orb when it reaches the target",
 	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots. You have 2.5 seconds to aim before throwing.",
 	Moves.Sunblast: "Fires a harsh, burning ray of disagreement straight ahead. Can hit eyespots.",
-	Moves.DungBowl: "Rolls a large ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
+	Moves.DungBowl: "Launches a ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
 	Moves.SpearThrust: "Strikes the target at a specific spot. Can hit sweetspots. Use arrow keys to aim. Press Enter when the marker is within the crosshair to hit!",
 	Moves.CrowSlash: "Strikes the target at multiple spots. Can hit sweetspots. Use the arrow keys to aim. Press Enter when the marker is within its crosshair to hit!",
-	Moves.Lunge: "The Bogey lunges to bite at a target. Use the arrow keys to aim."
+	Moves.Lunge: "Lunges to bite an opponent. Use the arrow keys to aim.",
+	Moves.BattleCry: "Yells at the opposing party, dealing modest damage to all Bogeymon."
 }
 var PpTable = {
 	Moves.None: 0,
@@ -48,6 +51,7 @@ var PpTable = {
 	Moves.SpearThrust: 20,
 	Moves.CrowSlash: 10,
 	Moves.Lunge: 10,
+	Moves.BattleCry: 5,
 	Moves.Feather: 10
 }
 
@@ -229,6 +233,7 @@ func use_brick_throw(target : Node2D, attackers: Array = [], c : Node2D = null):
 	add_child(f)
 	if !is_instance_valid(c):
 		c = load("res://BrickThrowCrosshair.tscn").instance()
+		c.source = self
 		world.add_child(c)
 		
 		var init : Vector2 = target.global_position + polar2cartesian(dist/32, randf() * 2 * PI)
@@ -377,7 +382,11 @@ func use_lunge():
 	var ch = preload("res://LungeCrosshair.tscn").instance()
 	ch.source = self
 	if cpu:
-		ch.target = world.get_opposing_creatures()[0]
+		var op = world.get_opposing_creatures()
+		if len(op) == 0:
+			return
+		op.shuffle()
+		ch.target = op.front()
 	world.add_child(ch)
 	ch.global_position = global_position + get_forward()*128
 	
@@ -407,6 +416,23 @@ func use_lunge():
 	bite.queue_free()
 	ch.queue_free()
 	yield(Game.inc_tw(world, self, "global_position", -disp, 1), "tween_all_completed")
+
+func use_battle_cry():
+	
+	yield(get_tree().create_timer(0.5), "timeout")
+	
+	var prev = $Pose.current_animation
+	var prevPos = $Pose.current_animation_position
+	$Pose.play("Hurt")
+	
+	
+	var cr = $BattleCry
+	for c in world.get_opposing_creatures():
+		c.take_damage(cr)
+	yield(get_tree().create_timer(2.0), "timeout")
+	
+	$Pose.play(prev)
+	$Pose.seek(prevPos)
 func miss():
 	var m = load("res://RatingMiss.tscn").instance()
 	world.add_child(m)

@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Creature.gd" type="Script" id=1]
 [ext_resource path="res://Cobrash.png" type="Texture" id=2]
 [ext_resource path="res://CreatureBody.gd" type="Script" id=3]
 [ext_resource path="res://Shadow.png" type="Texture" id=4]
+[ext_resource path="res://BattleCry.gd" type="Script" id=5]
 
 [sub_resource type="RectangleShape2D" id=18]
 extents = Vector2( 128, 32 )
@@ -302,7 +303,8 @@ tracks/1/keys = {
 script = ExtResource( 1 )
 bogey = 3
 species = "Cobrash"
-moves = [ 7, 0, 0, 0 ]
+moves = [ 7, 8, 0, 0 ]
+hp_max = 30
 
 [node name="Ground" type="Area2D" parent="."]
 script = ExtResource( 3 )
@@ -367,3 +369,6 @@ anims/Idle = SubResource( 11 )
 anims/Lunge = SubResource( 20 )
 anims/RESET = SubResource( 12 )
 anims/Summon = SubResource( 13 )
+
+[node name="BattleCry" type="Node" parent="." groups=["Impact"]]
+script = ExtResource( 5 )

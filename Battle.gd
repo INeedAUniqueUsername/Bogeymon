@@ -188,9 +188,12 @@ func _ready():
 							yield(showMessage(msg), "completed")
 							yield(c.use_crow_slash(get_cpu_target()), "completed")
 						Moves.Lunge:
-							
 							yield(showMessage(msg), "completed")
 							yield(c.use_lunge(), "completed")
+						Moves.BattleCry:
+							yield(showMessage(msg), "completed")
+							yield(c.use_battle_cry(), "completed")
+							
 						_:
 							continue
 					f.queue_free()
@@ -541,7 +544,6 @@ func handle_move(i):
 			Moves.Sunblast:
 				yield(showMessage(msg), "completed")
 				yield(creature.use_sunblast(attackers), "completed")
-				
 			_:
 				assert(false)
 		hideMessage()
@@ -601,6 +603,10 @@ func handle_move(i):
 			
 			yield(showMessage(msg), "completed")
 			yield(creature.use_lunge(), "completed")
+		Moves.BattleCry:
+			yield(showMessage(msg), "completed")
+			yield(creature.use_battle_cry(), "completed")
+			
 		_:
 			assert(false)
 			
