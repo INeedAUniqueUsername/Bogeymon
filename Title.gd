@@ -32,3 +32,7 @@ func transition(version):
 func play():
 	get_tree().change_scene("res://PartyBuilder.tscn")
 	pass
+func _process(delta):
+	if Input.is_key_pressed(KEY_ESCAPE):
+		Game.innovation = null
+		get_tree().change_scene("res://Title.tscn")

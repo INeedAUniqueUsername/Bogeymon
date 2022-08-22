@@ -126,7 +126,7 @@ func _ready():
 			place_creature(creatures[i + 6])
 		yield(get_tree().create_timer(0.5), "timeout")
 		
-	yield(get_tree().create_timer(2), "timeout")
+	yield(get_tree().create_timer(1), "timeout")
 		
 	$UI/Anim.play("Start2")
 	yield($UI/Anim, "animation_finished")
@@ -159,6 +159,11 @@ func _ready():
 					trainers[(c.place.side+1)%2].get_node("Anim").play("Cross")
 					trainers[c.place.side].get_node("Anim").play("Point")
 					var msg = "%s used %s!" % [creature.species, creature.NameTable[m].to_upper()]
+					
+					var f = Node.new()
+					add_child(f)
+					for cr in get_opposing_creatures():
+						cr.allow_defend(f)
 					match m:
 						Moves.SnapFreeze:
 							yield(showMessage(msg), "completed")
@@ -182,8 +187,13 @@ func _ready():
 							
 							yield(showMessage(msg), "completed")
 							yield(c.use_crow_slash(get_cpu_target()), "completed")
+						Moves.Lunge:
+							
+							yield(showMessage(msg), "completed")
+							yield(c.use_lunge(), "completed")
 						_:
 							continue
+					f.queue_free()
 					hideMessage()
 					break
 				continue
@@ -195,6 +205,16 @@ func _ready():
 			add_child(arrow)
 			yield(self, "creature_done")
 			arrow.queue_free()
+	
+	$UI/CreatureMenu.hide()
+	if playerWin:
+		
+		$Player/Anim.play("Win")
+		$Opponent/Anim.play("Lose")
+	else:
+		
+		$Opponent/Anim.play("Win")
+		$Player/Anim.play("Lose")
 	yield($UI/Center/EndBattle, "pressed")
 	evacuate_creatures()
 	if playerWin:
@@ -577,6 +597,10 @@ func handle_move(i):
 				
 			yield(showMessage(msg), "completed")
 			yield(creature.use_crow_slash(target), "completed")
+		Moves.Lunge:
+			
+			yield(showMessage(msg), "completed")
+			yield(creature.use_lunge(), "completed")
 		_:
 			assert(false)
 			

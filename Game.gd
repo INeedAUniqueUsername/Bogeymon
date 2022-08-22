@@ -34,10 +34,15 @@ func vector_to(start: Node2D, end: Node2D):
 	return end.global_position - start.global_position
 
 
-var campaign = true
-var player_team : Array = []
+var campaign = false
+var player_team : Array = [
+	#preload("res://Cobrash.tscn").instance()
+	
+]
 
-var opponent_team : Array = []
+var opponent_team : Array = [
+	#preload("res://Cobrash.tscn").instance()
+]
 
 var levelTable = generateLevelTable()
 var levelCount
@@ -45,13 +50,13 @@ func generateLevelTable():
 	var stoneborn = preload("res://Stoneborn.tscn")
 	var scarabold = preload("res://Scarabold.tscn")
 	var crowscare = preload("res://Crowscare.tscn")
+	var cobrash = preload("res://Cobrash.tscn")
 	var r = [
-		[stoneborn.instance(), stoneborn.instance(), stoneborn.instance()],
-		[stoneborn.instance(), scarabold.instance(), stoneborn.instance()],
-		[stoneborn.instance(), scarabold.instance(), scarabold.instance(), stoneborn.instance()],
-		[scarabold.instance(), crowscare.instance(), scarabold.instance(), stoneborn.instance(), stoneborn.instance()],
+		[stoneborn.instance(), stoneborn.instance(), scarabold.instance()],
+		[cobrash.instance(), scarabold.instance(), scarabold.instance(), stoneborn.instance()],
+		[cobrash.instance(), cobrash.instance(), scarabold.instance(), scarabold.instance(), stoneborn.instance()],
 		[stoneborn.instance(), crowscare.instance(), crowscare.instance(), scarabold.instance(), stoneborn.instance(), scarabold.instance()],
-		[crowscare.instance(), crowscare.instance(), stoneborn.instance(), scarabold.instance(), stoneborn.instance(), scarabold.instance()]
+		[crowscare.instance(), crowscare.instance(), cobrash.instance(), scarabold.instance(), stoneborn.instance(), scarabold.instance()]
 	]
 	levelCount = len(r)
 	return r

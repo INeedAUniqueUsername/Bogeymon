@@ -3,7 +3,7 @@ extends Node2D
 
 
 enum Bogeymon {
-	Stoneborn, Scarabold, Crowscare
+	Stoneborn, Scarabold, Crowscare, Cobrash
 }
 export(Bogeymon) var bogey
 export(String) var species
@@ -36,7 +36,8 @@ var DescTable = {
 	Moves.Sunblast: "Fires a harsh, burning ray of disagreement straight ahead. Can hit eyespots.",
 	Moves.DungBowl: "Rolls a large ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
 	Moves.SpearThrust: "Strikes the target at a specific spot. Can hit sweetspots. Use arrow keys to aim. Press Enter when the marker is within the crosshair to hit!",
-	Moves.CrowSlash: "Strikes the target at multiple spots. Can hit sweetspots. Use the arrow keys to aim. Press Enter when the marker is within its crosshair to hit!"
+	Moves.CrowSlash: "Strikes the target at multiple spots. Can hit sweetspots. Use the arrow keys to aim. Press Enter when the marker is within its crosshair to hit!",
+	Moves.Lunge: "The Bogey lunges to bite at a target. Use the arrow keys to aim."
 }
 var PpTable = {
 	Moves.None: 0,
@@ -109,7 +110,7 @@ class Flag:
 func _physics_process(delta):
 	if cpu:
 		return
-	if shield and !fainted and Input.is_key_pressed(KEY_ENTER):
+	if shield and !fainted and Input.is_key_pressed([KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6][place.index]):
 		shield.defend()
 		
 	if dodging and !fainted:
@@ -157,8 +158,8 @@ func allow_dodge(flag: Node):
 
 var shield : Node2D = null
 func allow_defend(flag: Node):
-	#if shield:
-	#	return
+	if shield:
+		return
 	shield = preload("res://Shield.tscn").instance()
 	add_child(shield)
 	shield.global_position = $Center.global_position
@@ -372,7 +373,40 @@ func use_crow_slash(target:Node2D):
 		miss()
 	
 	yield(Game.inc_tw(world, self, "global_position", -disp, 1), "tween_all_completed")
+func use_lunge():
+	var ch = preload("res://LungeCrosshair.tscn").instance()
+	ch.source = self
+	if cpu:
+		ch.target = world.get_opposing_creatures()[0]
+	world.add_child(ch)
+	ch.global_position = global_position + get_forward()*128
 	
+	yield(ch, "lunged")
+	ch.locked = true
+	
+	
+	var disp = ch.global_position - global_position
+	var bite = preload("res://Bite.tscn").instance()
+	bite.source = self
+	$Sprite.add_child(bite)
+	
+	bite.global_position = $Sprite/BitePos.global_position
+	
+	var a = $Pose.current_animation
+	if $Pose.has_animation("Lunge"):
+		$Pose.play("Lunge")
+	$Jump.play("Lunge")
+	yield(Game.inc_tw(world, self, "global_position", disp, 0.8), "tween_all_completed")
+	$Jump.play("RESET")
+	
+	if $Pose.has_animation("Lunge"):
+		$Pose.play(a)
+	
+	if !bite.hit:
+		miss()
+	bite.queue_free()
+	ch.queue_free()
+	yield(Game.inc_tw(world, self, "global_position", -disp, 1), "tween_all_completed")
 func miss():
 	var m = load("res://RatingMiss.tscn").instance()
 	world.add_child(m)

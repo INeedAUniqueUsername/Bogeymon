@@ -4,14 +4,16 @@ var Bogeymon = preload("res://Creature.gd").Bogeymon
 
 var DescTable = {
 	Bogeymon.Stoneborn: "Known as the Stubborn Stone Bogeymon, Stoneborn is a very, very, very stubborn tortoise who lives its entire life under a rock. Its only friend is a stick in the mud that is confirmed to have no opinions whatsoever.",
-	Bogeymon.Scarabold: "Known as the Dungeon Beetle Bogeymon, Scarabold is a battle-hardened beetle that lives in the dungeons of abandoned castles. Its heavily armored carapace is made of bricks as well as iron. Beware its bowling attack.",
-	Bogeymon.Crowscare: "Known as the Fearsome Crow Bogeymon, Crowscare wears a sweater that doesn't really fit it and a hat that it randomly found in the cornfields. It likes to show up and stand still around weird places during the night."
+	Bogeymon.Scarabold: "Known as the Tough Shell Bogeymon, Scarabold is a battle-hardened beetle that lives in the dungeons of abandoned castles. Its heavily armored carapace is made of bricks as well as iron. Beware its bowling attack.",
+	Bogeymon.Crowscare: "Known as the Fearsome Night Bogeymon, Crowscare wears a sweater that doesn't really fit it and a hat that it randomly found in the cornfields. It likes to show up and stand still around weird places during the night.",
+	Bogeymon.Cobrash: "Known as the Livid Snake Bogeymon, Cobrash maintains its status as the ruler of everything by stating its opinions loudly."
 }
 
 var bogeys = {
 	Bogeymon.Stoneborn: preload("res://Stoneborn.tscn").instance(),
 	Bogeymon.Scarabold: preload("res://Scarabold.tscn").instance(),
-	Bogeymon.Crowscare: preload("res://Crowscare.tscn").instance()
+	Bogeymon.Crowscare: preload("res://Crowscare.tscn").instance(),
+	Bogeymon.Cobrash: preload("res://Cobrash.tscn").instance()
 }
 
 func _ready():

@@ -265,7 +265,7 @@ margin_right = 256.0
 margin_bottom = 256.0
 flat = true
 
-[node name="D" type="NinePatchRect" parent="Pool"]
+[node name="Cobrash" type="NinePatchRect" parent="Pool"]
 margin_left = 1408.0
 margin_top = 256.0
 margin_right = 1664.0
@@ -277,7 +277,7 @@ patch_margin_top = 6
 patch_margin_right = 6
 patch_margin_bottom = 6
 
-[node name="Button" type="Button" parent="Pool/D"]
+[node name="Button" type="Button" parent="Pool/Cobrash"]
 margin_right = 256.0
 margin_bottom = 256.0
 flat = true

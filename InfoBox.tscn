@@ -39,35 +39,35 @@ position = Vector2( 264, 27 )
 script = ExtResource( 6 )
 
 [node name="D4" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 48, 0 )
+position = Vector2( 48, -3 )
 centered = true
 magnitude = 4.0
 amount = 0
 truncate = true
 
 [node name="D3" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 72, 0 )
+position = Vector2( 72, -3 )
 centered = true
 magnitude = 3.0
 amount = 0
 truncate = true
 
 [node name="D2" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 96, 0 )
+position = Vector2( 96, -3 )
 centered = true
 magnitude = 2.0
 amount = 0
 truncate = true
 
 [node name="D1" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 120, 0 )
+position = Vector2( 120, -3 )
 centered = true
 magnitude = 1.0
 amount = 0
 truncate = true
 
 [node name="D0" parent="HpRoller" instance=ExtResource( 5 )]
-position = Vector2( 144, 0 )
+position = Vector2( 144, -3 )
 centered = true
 magnitude = 0
 amount = 0
