@@ -10,7 +10,7 @@ config_version=4
 
 [application]
 
-config/name="Bogeymon"
+config/name="Bogeymon Bold and Brash"
 run/main_scene="res://Title.tscn"
 config/icon="res://icon.png"
 

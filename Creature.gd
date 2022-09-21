@@ -26,14 +26,14 @@ var NameTable = {
 	Moves.BrickThrow: "Brick Throw",
 	Moves.Sunblast: "Glare",
 	Moves.DungBowl: "Dung Beetle",
-	Moves.SpearThrust: "Spear Thrust",
+	Moves.SpearThrust: "Spear Jab",
 	Moves.CrowSlash: "Bird Strikes",
 	Moves.Lunge: "Lunge",
 	Moves.BattleCry: "Battle Cry",
-	Moves.Feather: "Feather"
+	Moves.Feather: "Feather" 
 }
 var DescTable = {
-	Moves.SnapFreeze: "Casts a freezing orb at the target. Press Enter to detonate the orb when it reaches the target",
+	Moves.SnapFreeze: "Casts a freezing orb at a target. Press Enter to detonate the orb and deal damage to nearby Bogeymon.",
 	Moves.BrickThrow: "Throws a brick at the target. Can hit sweetspots. You have 2.5 seconds to aim before throwing.",
 	Moves.Sunblast: "Fires a harsh, burning ray of disagreement straight ahead. Can hit eyespots.",
 	Moves.DungBowl: "Launches a ball of dung. Press Enter to accelerate the ball and use Up/Down to aim.",
@@ -217,7 +217,7 @@ func _snap_freeze(target: Node2D, c: Node2D):
 	var t = Game.tw_new(world)
 	
 	var dest = c.global_position + global_position.direction_to(target.global_position) * (512 * 4)
-	t.interpolate_property(c, "global_position", c.global_position, dest, 2.0, Tween.TRANS_QUAD, Tween.EASE_IN)
+	t.interpolate_property(c, "global_position", c.global_position, dest, 1.5, Tween.TRANS_QUAD, Tween.EASE_IN)
 	t.connect("tween_all_completed", c, "detonate")
 	var explosion = yield(c, "detonated")
 	var hit = c.hit

@@ -50,4 +50,4 @@ func nop(delta):
 
 func _on_area_entered(area):
 	if source.cpu and 'creature' in area and area.creature.place.side != source.place.side:
-		get_tree().create_timer(rand_range(0.2, 0.5)).connect("timeout", self, "detonate")
+		get_tree().create_timer(rand_range(0.1, 0.25)).connect("timeout", self, "detonate")

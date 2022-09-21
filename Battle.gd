@@ -423,15 +423,14 @@ func request_target(targets, allowCancel = true):
 	$UI/SelectTarget.hide()
 	return arrow.target
 	
-func request_target_multi(targets, green = false):
+func request_target_multi(targets, helper = false):
 	var arrow = load("res://MultiTargetArrow.tscn").instance()
 	arrow.creatures = targets
 	arrow.allowCancel = true
 	arrow.global_position = creature.global_position
 	add_child(arrow)
 	
-	
-	if green:
+	if helper:
 		arrow.sprite.texture = load("res://TargetArrowGreen.png")
 	
 	for c in targets:
@@ -447,6 +446,11 @@ func request_target_multi(targets, green = false):
 	$UI/SelectTargetMulti.connect("pressed", arrow, "select")
 	$UI/SelectTargetMulti/Prev.connect("pressed", arrow, "prev")
 	$UI/SelectTargetMulti/Next.connect("pressed", arrow, "next")
+	
+	$UI/SelectTargetMulti/Label.text = {
+		true: "Select Helper",
+		false: "Select Target"
+	}[helper]
 	
 	yield(arrow, "tree_exiting")
 	$UI/SelectTargetMulti.hide()
